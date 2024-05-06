@@ -22,15 +22,15 @@ public class Solution {
 		   		   
 		   ArrayList<Rettangolo> rect_intersecanti = new ArrayList<>();
 		   int j = i + 1; 
-		   
+		   		   
 		   while(j < rettangoli.size() && current_rect.margine_destro > rettangoli.get(j).margine_sinistro) { 
 			   rect_intersecanti.add(rettangoli.get(j));
-			   
+			   			   
 			   somma_altezze = max_altezza_cluster(rect_intersecanti, current_rect.altezza);
-			   
+			   			   
 			   j++;
 		   }
-			   
+		   		   			   
 		   if(somma_altezze > maxH) 
 			   maxH = somma_altezze;
 		   
@@ -45,8 +45,8 @@ public class Solution {
 	   double max_somma = altezza_current_rect;
 	   
 	   for(int i = 0; i < rect_intersecanti.size(); i++) {
-		   
-		   double somma_parziale = rect_intersecanti.get(i).altezza + altezza_current_rect;
+		   		   
+		   double somma_parziale = altezza_current_rect + rect_intersecanti.get(i).altezza;
 		  
 		   int j = i + 1;
 		   while(j < rect_intersecanti.size() && rect_intersecanti.get(i).margine_destro > rect_intersecanti.get(j).margine_sinistro) { 

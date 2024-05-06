@@ -8,16 +8,15 @@ public class Simulated_annealing_algorithm {
 				
 		//crea la prima soluzione, quella coi tect di base massima
         ArrayList<Rettangolo> rect = new ArrayList<>();
-        rect.add(new Rettangolo(0, 35, 70, 10, 1));
-        rect.add(new Rettangolo(10, 20, 30, 10, 1));
-        rect.add(new Rettangolo(30, 40, 40, 10, 1));
-        rect.add(new Rettangolo(50, 65, 15, 10, 1));
-        rect.add(new Rettangolo(60, 75, 45, 10, 1));
-        rect.add(new Rettangolo(70, 90, 40, 10, 1));
+        rect.add(new Rettangolo(0, 80, 80, 10, 1));
+        rect.add(new Rettangolo(30, 80, 50, 10, 1));
+        rect.add(new Rettangolo(40, 80, 40, 10, 1));
+        rect.add(new Rettangolo(30, 80, 30, 10, 1));
 
         
         Solution initial_solution = new Solution(rect);
-        double cost_initial_solution = initial_solution.cost_of_solution();   
+        double cost_initial_solution = initial_solution.cost_of_solution();  
+        initial_solution.print_solution();
         System.out.println("costo iniziale " + cost_initial_solution);
 
         Solution best_global_solution = initial_solution.clone();
@@ -25,10 +24,10 @@ public class Simulated_annealing_algorithm {
         System.out.println("/////////////////////////");
           
         
-        //svolgo l'algoritmo n volte e prendo la soluzione venuta meglio
+        //svolgo l'algoritmo n volte e prendo la soluzione migliore
         for(int epoch = 0; epoch < 5; epoch++) {
             
-            Solution current_solution_in_loop = simulated_annealing(initial_solution.clone(), cost_initial_solution);
+            Solution current_solution_in_loop = simulated_annealing(initial_solution.clone(), best_global_solution_cost);
             double cost_current_solution_in_loop = current_solution_in_loop.cost_of_solution();
             
             if(cost_current_solution_in_loop < best_global_solution_cost) {
@@ -43,7 +42,6 @@ public class Simulated_annealing_algorithm {
 	}
 	
 	public static Solution simulated_annealing(Solution current_solution, double cost_current_solution) {
-        
 		//inizialmente la soluzione migliore è quella iniziale
 		Solution best_solution = current_solution.clone();
 		double h_best_solution = cost_current_solution;
@@ -82,8 +80,6 @@ public class Simulated_annealing_algorithm {
         }//end for 
         
         return best_solution;
-//        best_solution.print_solution();
-//        System.out.println("costo finale " + h_best_solution);
 	}
 
 	
