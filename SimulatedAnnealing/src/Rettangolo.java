@@ -1,6 +1,8 @@
 import java.util.Random;
 
-public class Rettangolo{
+public class Rettangolo implements Comparable<Rettangolo>{
+	
+	public int fase;
 
 	public int base;
 	//è la massima portata erogabile dal plug, collegato ad una certa rete = min(portata plug, portata impiano elettrico)
@@ -144,6 +146,25 @@ public class Rettangolo{
 	public String toString() {
 		return "area " + area + ", altezza " + altezza + ", sin " + margine_sinistro + ", des " + margine_destro;
 	}
+
+	@Override
+	public int compareTo(Rettangolo r) {
+		
+		if(margine_sinistro < r.margine_sinistro)
+			return -1;
+		
+		if(margine_sinistro > r.margine_sinistro)
+			return 1;
+		
+		return 0;
+	}
+	
+	public Rettangolo clone() {
+		return new Rettangolo(margine_sinistro_minimo, margine_destro_massimo, 
+								margine_sinistro, margine_destro, area, max_altezza_possibile, 
+								min_altezza_possibile, base_minima, base_massima);
+	}
+	
 	
 }
 

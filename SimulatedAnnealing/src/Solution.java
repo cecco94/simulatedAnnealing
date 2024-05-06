@@ -1,24 +1,71 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
 public class Solution {
 
-    ArrayList<Rettangolo> fase;
-    double cost;
+    ArrayList<Rettangolo> rettangoli;
+    
+    //double cost;
     
     public Solution(ArrayList<Rettangolo> rettangoli) {
-    	fase = rettangoli;
+    	this.rettangoli = rettangoli;
     }
     
-    //public double cost_of_solution() {
-    //ordiniamo la lista dei rect in ordine di inizio della carica
-    //criamo un grafo dove ci salviamo chi interseca chi
-    //ogni rect guarda i suoi successori, se il loro punto di inizio è prima del suo punto di fine, vuol dire che si intersecano
-    //salva nel grafo questa informazione (per es a interseca b, creiamo un collegamento tra i nodi a,b)
-    //appena arriva al rect il cui punto di inizio è > del punto di fine del rect che sta scandendo, smette di scandire: non ci saranno sicuramente altri rect intersecanti
-    
-    //si passa al rect successivo, che scandisce la lista dalla posizione i + 1
-    	
-    //una volta creato il grafo, il costo è il massimo tra la somma delle altezze dei vari gruppetti
-    //}
+   public double cost_of_solution() {
+	   double maxH = 0;
+	   
+	   for(int i = 0; i < rettangoli.size(); i++) {
+		   
+		   if( maxH < rettangoli.get(i).altezza) 
+			   maxH = rettangoli.get(i).altezza;
+		   		   
+		   int j = i + 1; 
+		   double  hSum = rettangoli.get(i).altezza;
+		   
+		   while(j < rettangoli.size() && rettangoli.get(i).margine_destro > rettangoli.get(j).margine_sinistro) { 
+			   hSum += rettangoli.get(j).altezza;
+			   j++;
+		   }
+			   
+		   if(hSum > maxH) 
+			   maxH = hSum;
+		   
+	   }
+
+    	return maxH;	
+    }
+   
+   public Solution generate_new_random_solution() {
+		Random rand = new Random();
+		ArrayList<Rettangolo> new_list = new ArrayList<>();
+		
+	   for(int i = 0; i < rettangoli.size(); i++) {
+		   Rettangolo new_rect = rettangoli.get(i).random_generation(rand);
+		   new_list.add(new_rect);
+	   }
+	   
+	   Collections.sort(new_list);
+	   Solution new_solution = new Solution(new_list);
+	   return new_solution;
+   }
+   
+   public void print_solution() {
+	   for(int i = 0; i < rettangoli.size(); i++) {
+		   System.out.println(rettangoli.get(i).toString());
+		   System.out.println();
+	   }
+   }
+      
+   
+   public Solution clone() {
+		ArrayList<Rettangolo> new_list = new ArrayList<>();
+	   for(int i = 0; i < rettangoli.size(); i++) {
+		   Rettangolo new_rect = rettangoli.get(i).clone();
+		   new_list.add(new_rect);
+	   }
+	   Solution new_solution = new Solution(new_list);
+	   return new_solution;
+   }
     
 }
