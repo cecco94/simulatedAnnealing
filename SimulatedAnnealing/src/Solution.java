@@ -17,24 +17,51 @@ public class Solution {
 	   
 	   for(int i = 0; i < rettangoli.size(); i++) {
 		   
-		   if( maxH < rettangoli.get(i).altezza) 
-			   maxH = rettangoli.get(i).altezza;
+		   Rettangolo current_rect = rettangoli.get(i);
+		   double  somma_altezze = current_rect.altezza;
 		   		   
+		   ArrayList<Rettangolo> rect_intersecanti = new ArrayList<>();
 		   int j = i + 1; 
-		   double  hSum = rettangoli.get(i).altezza;
 		   
-		   while(j < rettangoli.size() && rettangoli.get(i).margine_destro > rettangoli.get(j).margine_sinistro) { 
-			   hSum += rettangoli.get(j).altezza;
+		   while(j < rettangoli.size() && current_rect.margine_destro > rettangoli.get(j).margine_sinistro) { 
+			   rect_intersecanti.add(rettangoli.get(j));
+			   
+			   somma_altezze = max_altezza_cluster(rect_intersecanti, current_rect.altezza);
+			   
 			   j++;
 		   }
 			   
-		   if(hSum > maxH) 
-			   maxH = hSum;
+		   if(somma_altezze > maxH) 
+			   maxH = somma_altezze;
 		   
 	   }
 
     	return maxH;	
     }
+   
+   
+   private double max_altezza_cluster(ArrayList<Rettangolo> rect_intersecanti, double altezza_current_rect) {
+	   
+	   double max_somma = altezza_current_rect;
+	   
+	   for(int i = 0; i < rect_intersecanti.size(); i++) {
+		   
+		   double somma_parziale = rect_intersecanti.get(i).altezza + altezza_current_rect;
+		  
+		   int j = i + 1;
+		   while(j < rect_intersecanti.size() && rect_intersecanti.get(i).margine_destro > rect_intersecanti.get(j).margine_sinistro) { 
+			   somma_parziale += rect_intersecanti.get(j).altezza;
+			   j++;
+		   }
+		   
+		   if(somma_parziale > max_somma) {
+			   max_somma = somma_parziale;
+		   }
+		   
+	   }
+	   return max_somma;
+   }
+
    
    public Solution generate_new_random_solution() {
 		Random rand = new Random();
@@ -53,7 +80,6 @@ public class Solution {
    public void print_solution() {
 	   for(int i = 0; i < rettangoli.size(); i++) {
 		   System.out.println(rettangoli.get(i).toString());
-		   System.out.println();
 	   }
    }
       
