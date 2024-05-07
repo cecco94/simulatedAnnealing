@@ -19,46 +19,10 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	
 	int margine_sinistro, margine_destro;
 	
-	//rettangolo che viene creato durante il ciclo for
-	public Rettangolo(int msm, int mdm, int ms, int md, double a, double max_h, double min_h, int bmin, int bmax) throws RectImpossibleException {
-		margine_sinistro_minimo = msm;
-		margine_destro_massimo = mdm;
-		
-		margine_sinistro = ms;
-		margine_destro = md;
-		
-		base_minima = bmin;
-		base_massima = bmax;
-		
-		max_altezza_possibile = max_h;
-		min_altezza_possibile = min_h;
-		
-		if(margine_destro > margine_destro_massimo || margine_sinistro < margine_sinistro_minimo) {
-			throw new RectImpossibleException("dimensioni base sballate");
-		}
-		
-		area = a;
-		base = margine_destro - margine_sinistro;
-		//se il rect con base massima è troppo stretto, non possiamo che riportare un errore
-		base = margine_destro - margine_sinistro;
-		if(base < base_minima) {
-			throw new RectImpossibleException("troppo poco tempo per caricare il veicolo");
-		}
-		
-		//se il rect con base massima è troppo largo, lo accorciamo fino al valore di base massimo ammissibile
-		if(base > base_massima) {
-			margine_destro = margine_sinistro_minimo + base_massima;
-			base = margine_destro - margine_sinistro;
-		}
-		
-		altezza = area/base;
-		
-	}
-	
 	//la prima volta che viene creato, il rettangolo ha base = base massima
 	public Rettangolo(int msm, int mdm, double a, double max_h, double min_h) throws RectImpossibleException {
 		if(mdm <= msm) {
-			throw new RectImpossibleException("base negativa o nulla!");
+			throw new RectImpossibleException("intervallo di tempo negativo o nullo");
 		}
 		
 		area = a;
@@ -81,7 +45,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 			throw new RectImpossibleException("troppo poco tempo per caricare il veicolo " + "area " + a + " base " + base + " altezza " + (area/base));
 		}
 		
-		//se il rect con base massima è troppo largo, lo accorciamo fino al valore di base massimo ammissibile
+		//se il rect con base massima è troppo largo, accorciamo il margine destro fino al valore di base massimo ammissibile
 		if(base > base_massima) {
 			margine_destro = margine_sinistro_minimo + base_massima;
 			base = margine_destro - margine_sinistro;
@@ -91,8 +55,43 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		
 	}	
 	
+	//rettangolo che viene creato durante il ciclo for
+	public Rettangolo(int msm, int mdm, int ms, int md, double a, double max_h, double min_h, int bmin, int bmax) throws RectImpossibleException {
+		margine_sinistro_minimo = msm;
+		margine_destro_massimo = mdm;
+		
+		margine_sinistro = ms;
+		margine_destro = md;
+		
+		base_minima = bmin;
+		base_massima = bmax;
+		
+		max_altezza_possibile = max_h;
+		min_altezza_possibile = min_h;
+		
+		if(margine_destro > margine_destro_massimo || margine_sinistro < margine_sinistro_minimo) {
+			throw new RectImpossibleException("dimensioni base sballate");
+		}
+		
+		area = a;
+		//se il rect con base massima è troppo stretto, non possiamo che riportare un errore
+		base = margine_destro - margine_sinistro;
+		if(base < base_minima) {
+			throw new RectImpossibleException("troppo poco tempo per caricare il veicolo");
+		}
+		
+		//se il rect con base massima è troppo largo, lo accorciamo fino al valore di base massimo ammissibile
+		if(base > base_massima) {
+			margine_destro = margine_sinistro_minimo + base_massima;
+			base = margine_destro - margine_sinistro;
+		}
+
+		altezza = area/base;
+		
+	}
+		
 	//dato il rettangolo, dovrebbe generare un altro rettangolo ammissibile attraverso piccole perturbazioni casuali dei valor idella base
-	public Rettangolo randomGeneration(Random rand) {
+	public Rettangolo randomGeneration(Random rand) throws RectImpossibleException {
 		
 		int nuovo_margine_sinistro, nuovo_margine_destro;
 		
@@ -117,9 +116,6 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		else
 			nuovo_margine_destro = margine_destro - 1;
 		
-		if(nuovo_margine_destro > margine_destro_massimo)
-			nuovo_margine_destro = margine_destro_massimo;
-		
 		//se abbiamo stretto troppo, dobbiamo allargare il rect
 		if(nuovo_margine_destro - nuovo_margine_sinistro < base_minima) {
 			nuovo_margine_destro = nuovo_margine_sinistro + base_minima;
@@ -127,21 +123,15 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		
 		//se abbiamo allargato troppo, dobbiamo stringere il rect
 		if(nuovo_margine_destro - nuovo_margine_sinistro > base_massima) {
-			nuovo_margine_destro = nuovo_margine_sinistro + base_massima;
+			nuovo_margine_destro = margine_destro_massimo; //nuovo_margine_sinistro + base_massima;
 		}
 		
-		Rettangolo nuovo_rect;
-		//se qualcosa è andato storto per qualsiasi ragione, annulla la generazione casuale del rect
-		try {
-			nuovo_rect = new Rettangolo(margine_sinistro_minimo, margine_destro_massimo, nuovo_margine_sinistro, nuovo_margine_destro, 
+		if(nuovo_margine_destro > margine_destro_massimo)
+			nuovo_margine_destro = margine_destro_massimo;
+
+		return new Rettangolo(margine_sinistro_minimo, margine_destro_massimo, nuovo_margine_sinistro, nuovo_margine_destro, 
 												area, max_altezza_possibile, min_altezza_possibile, base_minima, base_massima);
-		}
-		catch(RectImpossibleException r) {
-			System.out.println(r.getMessage());
-			nuovo_rect = this.clone();
-		}
-		
-		return nuovo_rect;
+	
 	}
 	
 	public String toString() {

@@ -1,5 +1,4 @@
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -11,40 +10,53 @@ public class SimulatedAnnealingAlgorithm {
 	public static void main(String[] args) throws RectImpossibleException {
 				
 		//crea la prima soluzione, quella coi rect di base massima
-        ArrayList<Rettangolo> rect = new ArrayList<>();        
-        for(int i = 0; i < 50; i++) {
+        ArrayList<Rettangolo> rect = new ArrayList<>();           
+//        rect.add(new Rettangolo(0, 50, 100.02, 10, 1));
+//        rect.add(new Rettangolo(0, 200, 1000.45, 10, 1));
+//        rect.add(new Rettangolo(170, 220, 150.255, 10, 1));
+//        
+//        rect.add(new Rettangolo(185, 250, 260.77, 10, 1));
+//        rect.add(new Rettangolo(230, 300, 70.98, 10, 1));
+//        rect.add(new Rettangolo(280, 320, 80.255, 10, 1));
+        
+        for(int i = 0; i < 6; i++) {
         	rect.add(GeneratoreRettangoliCasuali.generaRettangolo());        	
         }
         Collections.sort(rect);
         
         Solution initial_solution = new Solution(rect);    
-        visualizzaSoluzione(initial_solution);
-//        double cost_initial_solution = initial_solution.costOfSolution();  
-//        initial_solution.printSolution();
-//        System.out.println("costo iniziale " + cost_initial_solution);
-//        
-//        Solution best_global_solution = initial_solution.clone();
-//        double best_global_solution_cost = cost_initial_solution;
-//        System.out.println("/////////////////////////");
-//                  
-//        
-//        Long inizio = System.currentTimeMillis();
-//        //svolgo l'algoritmo n volte e prendo la soluzione migliore
-//        for(int epoch = 0; epoch < 15; epoch++) {
-//            
-//            Solution current_solution_in_loop = simulatedAnnealing(initial_solution.clone(), best_global_solution_cost);
-//            double cost_current_solution_in_loop = current_solution_in_loop.costOfSolution();
-//            
-//            if(cost_current_solution_in_loop < best_global_solution_cost) {
-//            	best_global_solution = current_solution_in_loop;
-//            	best_global_solution_cost = cost_current_solution_in_loop;
-//            }
+        visualizzaSoluzione(initial_solution, "prima");
+        double cost_initial_solution = initial_solution.costOfSolution();  
+        initial_solution.printSolution();
+        System.out.println("costo iniziale " + cost_initial_solution);
+        
+        Solution best_global_solution = initial_solution.clone();
+        double best_global_solution_cost = cost_initial_solution;
+        System.out.println("/////////////////////////");
+                  
+//        for(int i = 0; i < 200; i++) {
+//        	initial_solution = initial_solution.generateNewRandomSolution();
 //        }
-//        Long fine = System.currentTimeMillis();
 //        
-//        best_global_solution.printSolution();
-//        System.out.println("costo finale " + best_global_solution_cost + " durata " + (fine-inizio));
-//        
+//        initial_solution.printSolution();
+        
+        //svolgo l'algoritmo n volte e prendo la soluzione migliore
+        for(int epoch = 0; epoch < 15; epoch++) {
+            
+            Solution current_solution_in_loop = simulatedAnnealing(initial_solution.clone(), best_global_solution_cost);
+            double cost_current_solution_in_loop = current_solution_in_loop.costOfSolution();
+            
+            if(cost_current_solution_in_loop < best_global_solution_cost) {
+            	best_global_solution = current_solution_in_loop;
+            	best_global_solution_cost = cost_current_solution_in_loop;
+            }
+        }
+                
+        
+        visualizzaSoluzione(best_global_solution, "dopo");
+        best_global_solution.printSolution();
+        System.out.println("costo finale " + best_global_solution_cost);
+        
 	}
 	
 	public static Solution simulatedAnnealing(Solution current_solution, double cost_current_solution) throws RectImpossibleException {
@@ -90,31 +102,13 @@ public class SimulatedAnnealingAlgorithm {
         return best_solution;
 	}
 	
-	public static void visualizzaSoluzione(Solution soluzione) {
-		JFrame frame = new JFrame("Disegno Rettangoli");
+	public static void visualizzaSoluzione(Solution soluzione, String title) {
+		JFrame frame = new JFrame(title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 400);
-
-        JPanel panel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                drawRectangles(g);
-            }
-
-            private void drawRectangles(Graphics g) {
-                g.setColor(Color.RED);
-                g.fillRect(50, 50, 100, 100);
-
-                g.setColor(Color.BLUE);
-                g.fillRect(200, 50, 150, 100);
-
-                g.setColor(Color.GREEN);
-                g.fillRect(100, 200, 200, 150);
-            }
-        };
-
-        frame.add(panel);
+        SolutionPanel solPan = new SolutionPanel(soluzione);
+        solPan.setPreferredSize(new Dimension(600, 400));
+        frame.add(solPan);
+        frame.pack();
         frame.setVisible(true);
 	}
 	
