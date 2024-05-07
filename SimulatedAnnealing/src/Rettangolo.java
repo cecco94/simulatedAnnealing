@@ -20,7 +20,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	int margine_sinistro, margine_destro;
 	
 	//rettangolo che viene creato durante il ciclo for
-	public Rettangolo(int msm, int mdm, int ms, int md, double a, double max_h, double min_h, int bmin, int bmax) {
+	public Rettangolo(int msm, int mdm, int ms, int md, double a, double max_h, double min_h, int bmin, int bmax) throws RectImpossibleException {
 		margine_sinistro_minimo = msm;
 		margine_destro_massimo = mdm;
 		
@@ -34,7 +34,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		min_altezza_possibile = min_h;
 		
 		if(margine_destro > margine_destro_massimo || margine_sinistro < margine_sinistro_minimo) {
-			System.out.println("dimensioni base sballate");
+			throw new RectImpossibleException("dimensioni base sballate");
 		}
 		
 		area = a;
@@ -42,7 +42,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		//se il rect con base massima è troppo stretto, non possiamo che riportare un errore
 		base = margine_destro - margine_sinistro;
 		if(base < base_minima) {
-			System.out.println("troppo poco tempo per caricare il veicolo");
+			throw new RectImpossibleException("troppo poco tempo per caricare il veicolo");
 		}
 		
 		//se il rect con base massima è troppo largo, lo accorciamo fino al valore di base massimo ammissibile
@@ -56,9 +56,9 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	}
 	
 	//la prima volta che viene creato, il rettangolo ha base = base massima
-	public Rettangolo(int msm, int mdm, double a, double max_h, double min_h) {
+	public Rettangolo(int msm, int mdm, double a, double max_h, double min_h) throws RectImpossibleException {
 		if(mdm <= msm) {
-			System.out.println("base negativa o nulla!");
+			throw new RectImpossibleException("base negativa o nulla!");
 		}
 		
 		area = a;
@@ -69,8 +69,8 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		margine_sinistro_minimo = msm;
 		margine_destro_massimo = mdm;
 		
-		margine_sinistro = msm;
-		margine_destro = mdm;
+		margine_sinistro = margine_sinistro_minimo;
+		margine_destro = margine_destro_massimo;
 		
 		base_minima = (int)(Math.ceil(area/max_altezza_possibile));
 		base_massima = (int)(area/min_altezza_possibile);
@@ -78,7 +78,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		//se il rect con base massima è troppo stretto, non possiamo che riportare un errore
 		base = margine_destro - margine_sinistro;
 		if(base < base_minima) {
-			System.out.println("troppo poco tempo per caricare il veicolo");
+			throw new RectImpossibleException("troppo poco tempo per caricare il veicolo " + "area " + a + " base " + base + " altezza " + (area/base));
 		}
 		
 		//se il rect con base massima è troppo largo, lo accorciamo fino al valore di base massimo ammissibile
@@ -89,19 +89,10 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		
 		altezza = area/base;
 		
-	}
-	
-	public boolean intersect(Rettangolo rect) {
-		boolean primo_caso = rect.margine_sinistro < margine_destro && margine_destro < rect.margine_destro;	//sta a sinistra dell'alatro
-		boolean secondo_caso = rect.margine_sinistro < margine_sinistro && margine_sinistro < rect.margine_destro;	//sta a destra dellaltro rect
-		boolean terzo_caso = margine_sinistro <= rect.margine_sinistro && margine_destro >= rect.margine_destro;	//contiene l'altro rect
-		boolean quarto_caso = margine_sinistro >= rect.margine_sinistro && margine_destro <= rect.margine_destro;	//è contenuto nell'altro rect
-		return primo_caso || secondo_caso || terzo_caso || quarto_caso;
-	}
-	
+	}	
 	
 	//dato il rettangolo, dovrebbe generare un altro rettangolo ammissibile attraverso piccole perturbazioni casuali dei valor idella base
-	public Rettangolo random_generation(Random rand) {
+	public Rettangolo randomGeneration(Random rand) {
 		
 		int nuovo_margine_sinistro, nuovo_margine_destro;
 		
@@ -139,8 +130,18 @@ public class Rettangolo implements Comparable<Rettangolo>{
 			nuovo_margine_destro = nuovo_margine_sinistro + base_massima;
 		}
 		
-		return new Rettangolo(margine_sinistro_minimo, margine_destro_massimo, nuovo_margine_sinistro, nuovo_margine_destro, 
+		Rettangolo nuovo_rect;
+		//se qualcosa è andato storto per qualsiasi ragione, annulla la generazione casuale del rect
+		try {
+			nuovo_rect = new Rettangolo(margine_sinistro_minimo, margine_destro_massimo, nuovo_margine_sinistro, nuovo_margine_destro, 
 												area, max_altezza_possibile, min_altezza_possibile, base_minima, base_massima);
+		}
+		catch(RectImpossibleException r) {
+			System.out.println(r.getMessage());
+			nuovo_rect = this.clone();
+		}
+		
+		return nuovo_rect;
 	}
 	
 	public String toString() {
@@ -159,12 +160,24 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		return 0;
 	}
 	
-	public Rettangolo clone() {
-		return new Rettangolo(margine_sinistro_minimo, margine_destro_massimo, 
-								margine_sinistro, margine_destro, area, max_altezza_possibile, 
-								min_altezza_possibile, base_minima, base_massima);
+	public Rettangolo clone(){
+		try {
+			return new Rettangolo(margine_sinistro_minimo, margine_destro_massimo, 
+									margine_sinistro, margine_destro, area, max_altezza_possibile, 
+									min_altezza_possibile, base_minima, base_massima);
+		} 
+		catch (RectImpossibleException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	
+//	public boolean intersect(Rettangolo rect) {
+//	boolean primo_caso = rect.margine_sinistro < margine_destro && margine_destro < rect.margine_destro;	//sta a sinistra dell'alatro
+//	boolean secondo_caso = rect.margine_sinistro < margine_sinistro && margine_sinistro < rect.margine_destro;	//sta a destra dellaltro rect
+//	boolean terzo_caso = margine_sinistro <= rect.margine_sinistro && margine_destro >= rect.margine_destro;	//contiene l'altro rect
+//	boolean quarto_caso = margine_sinistro >= rect.margine_sinistro && margine_destro <= rect.margine_destro;	//è contenuto nell'altro rect
+//	return primo_caso || secondo_caso || terzo_caso || quarto_caso;
+//}
 }
 

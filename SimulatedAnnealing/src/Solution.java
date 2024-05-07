@@ -12,7 +12,7 @@ public class Solution {
     	this.rettangoli = rettangoli;
     }
     
-   public double cost_of_solution() {
+   public double costOfSolution() {
 	   double maxH = 0;
 	   
 	   for(int i = 0; i < rettangoli.size(); i++) {
@@ -26,7 +26,7 @@ public class Solution {
 		   while(j < rettangoli.size() && current_rect.margine_destro > rettangoli.get(j).margine_sinistro) { 
 			   rect_intersecanti.add(rettangoli.get(j));
 			   			   
-			   somma_altezze = max_altezza_cluster(rect_intersecanti, current_rect.altezza);
+			   somma_altezze = maxAltezzaCluster(rect_intersecanti, current_rect.altezza);
 			   			   
 			   j++;
 		   }
@@ -40,7 +40,7 @@ public class Solution {
     }
    
    
-   private double max_altezza_cluster(ArrayList<Rettangolo> rect_intersecanti, double altezza_current_rect) {
+   private double maxAltezzaCluster(ArrayList<Rettangolo> rect_intersecanti, double altezza_current_rect) {
 	   
 	   double max_somma = altezza_current_rect;
 	   
@@ -63,12 +63,12 @@ public class Solution {
    }
 
    
-   public Solution generate_new_random_solution() {
+   public Solution generateNewRandomSolution() throws RectImpossibleException {
 		Random rand = new Random();
 		ArrayList<Rettangolo> new_list = new ArrayList<>();
 		
 	   for(int i = 0; i < rettangoli.size(); i++) {
-		   Rettangolo new_rect = rettangoli.get(i).random_generation(rand);
+		   Rettangolo new_rect = rettangoli.get(i).randomGeneration(rand);
 		   new_list.add(new_rect);
 	   }
 	   
@@ -77,7 +77,7 @@ public class Solution {
 	   return new_solution;
    }
    
-   public void print_solution() {
+   public void printSolution() {
 	   for(int i = 0; i < rettangoli.size(); i++) {
 		   System.out.println(rettangoli.get(i).toString());
 	   }
