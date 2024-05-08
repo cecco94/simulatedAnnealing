@@ -6,6 +6,7 @@ public class Solution {
 
     ArrayList<Rettangolo> rettangoli;
     ArrayList<Punto> punti_di_inizio_fine;
+    double massimo_sfasamento_consentito = 5;
     
     
    public Solution(ArrayList<Rettangolo> rettangoli) {
@@ -19,11 +20,6 @@ public class Solution {
     		punti_di_inizio_fine.add(new Punto(r, r.margine_destro, r.altezza, false));
     	}
     	Collections.sort(punti_di_inizio_fine);
-    	
-//    	System.out.println("numero punti " + punti_di_inizio_fine.size());
-//    	for(int i = 0; i < punti_di_inizio_fine.size(); i++) {
-//    		System.out.println(punti_di_inizio_fine.get(i).toString());
-//    	}
     	
     }
    
@@ -70,6 +66,90 @@ public class Solution {
 	   }
 	   return punto_critico;
    }
+   
+   
+   public double sfasamento() {
+	   double h_fase_1 = 0;
+	   double h_fase_2 = 0;
+	   double sfasamento_massimo = 0;  //da mettere 
+	   
+	   for(int i = 0; i < punti_di_inizio_fine.size(); i++) {
+		   
+		   Punto p = punti_di_inizio_fine.get(i);
+		   
+		   if(p.punto_di_inizio) {
+			   if(p.r.fase == 1) {
+				   h_fase_1 += p.altezza_rect;
+			   }
+			   else if(p.r.fase == 2) {
+				   h_fase_2 += p.altezza_rect;
+			   }
+		   }
+			   
+		   else 
+			   if(p.r.fase == 1) {
+				   h_fase_1 -= p.altezza_rect;
+			   }
+			   else if(p.r.fase == 2) {
+				   h_fase_2 -= p.altezza_rect;
+			   }
+		   
+		   System.out.println( Math.abs(h_fase_1 - h_fase_2));
+		   double sfasamento = Math.abs(h_fase_1 - h_fase_2);
+		   if(sfasamento > sfasamento_massimo) {
+			   sfasamento_massimo = sfasamento;
+		   }
+		   
+	   }
+	   
+	   if(sfasamento_massimo < massimo_sfasamento_consentito) {
+		   return 0;
+	   }
+		   
+	   return sfasamento_massimo;
+   }
+
+   
+   public Punto puntoMassimoSfasamento() {
+	   double h_fase_1 = 0;
+	   double h_fase_2 = 0;
+	   double massimo_sfasamento = 0;  //da mettere
+	   Punto punto_max_sfasamento = null;
+	   
+	   for(int i = 0; i < punti_di_inizio_fine.size(); i++) {
+		   
+		   Punto p = punti_di_inizio_fine.get(i);
+		   
+		   if(p.punto_di_inizio) {
+			   if(p.r.fase == 1) {
+				   h_fase_1 += p.altezza_rect;
+			   }
+			   else if(p.r.fase == 2) {
+				   h_fase_2 += p.altezza_rect;
+			   }
+		   }
+			   
+		   else 
+			   if(p.r.fase == 1) {
+				   h_fase_1 -= p.altezza_rect;
+			   }
+			   else if(p.r.fase == 2) {
+				   h_fase_2 -= p.altezza_rect;
+			   }
+		   
+		   double sfasamento = Math.abs(h_fase_1 - h_fase_2);
+		   if(sfasamento > massimo_sfasamento) {
+			   massimo_sfasamento = sfasamento;
+			   if(massimo_sfasamento > massimo_sfasamento_consentito) {
+				   punto_max_sfasamento = p;
+			   }
+		   }
+		   
+	   }
+	   
+	   return punto_max_sfasamento;
+   }
+   
    
    public Solution generateNewRandomSolution() throws RectImpossibleException {
 		Random rand = new Random();

@@ -9,11 +9,13 @@ public class GeneratoreRettangoliCasuali {
 		double altezza_massima = 7.2;
 		double altezza_minima = 2.3;
 		
+		int fase = 1 + rand.nextInt(2);
+		
 		int inizio = rand.nextInt(480);	//8 ore della notte
 		double area = 30.0 + rand.nextDouble(150.0); //quanti kwh può accumulare in media un'auto
 		int base = (int)(area/altezza_minima);
 		
-		return new Rettangolo(id, inizio, inizio + base, area, altezza_massima, altezza_minima);
+		return new Rettangolo(id, fase, inizio, inizio + base, area, altezza_massima, altezza_minima);
 
 	}
 	

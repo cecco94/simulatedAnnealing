@@ -32,26 +32,33 @@ public class SolutionPanel extends JPanel {
     		 Rettangolo r = soluzione.rettangoli.get(i);
     		 
     		 Rectangle2D.Double rect = new Rectangle2D.Double(r.margine_sinistro, 400 - r.altezza*40, r.base, r.altezza*40);    		 
-    		 if((r.identificativo&7) == 0) {
-    			 g2.setColor(Color.RED);
-    		 }
-    		 else if((r.identificativo&7) == 1) {
+//    		 if((r.identificativo&7) == 0) {
+//    			 g2.setColor(Color.RED);
+//    		 }
+//    		 else if((r.identificativo&7) == 1) {
+//    			 g2.setColor(Color.GREEN);
+//    		 }
+//    		 else if((r.identificativo&7) == 2) {
+//    			 g2.setColor(Color.BLUE);
+//    		 }
+//    		 else if((r.identificativo&7) == 3) {
+//    			 g2.setColor(Color.magenta);
+//    		 }
+//    		 else if((r.identificativo&7) == 4) {
+//    			 g2.setColor(Color.LIGHT_GRAY);
+//    		 }
+//    		 else if((r.identificativo&7) == 5) {
+//    			 g2.setColor(Color.ORANGE);
+//    		 }
+//    		 else if((r.identificativo&7) == 6) {
+//    			 g2.setColor(Color.PINK);
+//    		 }
+    		 
+    		 if((r.fase) == 1) {
     			 g2.setColor(Color.GREEN);
     		 }
-    		 else if((r.identificativo&7) == 2) {
+    		 else if((r.fase) == 2) {
     			 g2.setColor(Color.BLUE);
-    		 }
-    		 else if((r.identificativo&7) == 3) {
-    			 g2.setColor(Color.magenta);
-    		 }
-    		 else if((r.identificativo&7) == 4) {
-    			 g2.setColor(Color.LIGHT_GRAY);
-    		 }
-    		 else if((r.identificativo&7) == 5) {
-    			 g2.setColor(Color.ORANGE);
-    		 }
-    		 else if((r.identificativo&7) == 6) {
-    			 g2.setColor(Color.PINK);
     		 }
     		 
     		 g2.fill(rect);
@@ -79,7 +86,7 @@ public class SolutionPanel extends JPanel {
    			h -= p.altezza_rect;
    		
    		//g2.drawLine(p.x, (int)(400 - p.altezza_rect*40), p2.x - p.x, (int)(400 - p.altezza_rect*40));
-   		Rectangle2D.Double rect = new Rectangle2D.Double(p.x, 400 - h*40, p2.x - p.x, 2);  
+   		Rectangle2D.Double rect = new Rectangle2D.Double(p.x, 400 - h*40 - 2, p2.x - p.x, 2);  
    		g2.fill(rect);
    	 }
 	}

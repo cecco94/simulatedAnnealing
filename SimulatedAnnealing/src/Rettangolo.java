@@ -4,6 +4,8 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	
 	int identificativo;
 	
+	int fase;
+	
 	//è la massima portata erogabile dal plug, collegato ad una certa rete = min(portata plug, portata impiano elettrico)
 	public double altezza, max_altezza_possibile;
 	
@@ -24,12 +26,14 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	
 	
 	//la prima volta che viene creato, il rettangolo ha base = base massima
-	public Rettangolo(int id, int msm, int mdm, double a, double max_h, double min_h) throws RectImpossibleException {
+	public Rettangolo(int id, int fase, int msm, int mdm, double a, double max_h, double min_h) throws RectImpossibleException {
 		if(mdm <= msm) {
 			throw new RectImpossibleException("intervallo di tempo negativo o nullo");
 		}
 		
 		identificativo = id;
+		
+		this.fase = fase;
 		
 		area = a;
 		
@@ -63,10 +67,11 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	
 	
 	//rettangolo che viene creato durante il ciclo for, con la generazione casuale
-	public Rettangolo(int id, int msm, int mdm, int ms, int md, double a, double max_h, double min_h, int bmin, int bmax) throws RectImpossibleException {
+	public Rettangolo(int id, int fase, int msm, int mdm, int ms, int md, double a, double max_h, double min_h, int bmin, int bmax) throws RectImpossibleException {
 		
 		identificativo = id;
-		
+		this.fase = fase;
+
 		margine_sinistro_minimo = msm;
 		margine_destro_massimo = mdm;
 		
@@ -140,7 +145,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		if(nuovo_margine_destro > margine_destro_massimo)
 			nuovo_margine_destro = margine_destro_massimo;
 
-		return new Rettangolo(identificativo, margine_sinistro_minimo, margine_destro_massimo, nuovo_margine_sinistro, nuovo_margine_destro, 
+		return new Rettangolo(identificativo, fase, margine_sinistro_minimo, margine_destro_massimo, nuovo_margine_sinistro, nuovo_margine_destro, 
 												area, max_altezza_possibile, min_altezza_possibile, base_minima, base_massima);
 	
 	}
@@ -164,7 +169,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		Rettangolo nuovo_rettangolo = null;
 		
 		try {
-			nuovo_rettangolo = new Rettangolo(identificativo, margine_sinistro_minimo, margine_destro_massimo, margine_sinistro, margine_destro, area, 
+			nuovo_rettangolo = new Rettangolo(identificativo, fase, margine_sinistro_minimo, margine_destro_massimo, margine_sinistro, margine_destro, area, 
 									max_altezza_possibile, min_altezza_possibile, base_minima, base_massima);
 		} 
 		catch (RectImpossibleException e) {
