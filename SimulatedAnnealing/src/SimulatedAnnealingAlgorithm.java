@@ -9,18 +9,10 @@ public class SimulatedAnnealingAlgorithm {
 	
 	public static void main(String[] args) throws RectImpossibleException {
 				
-		//crea la prima soluzione, quella coi rect di base massima
-        ArrayList<Rettangolo> rect = new ArrayList<>();           
-//        rect.add(new Rettangolo(0, 50, 100.02, 10, 1));
-//        rect.add(new Rettangolo(0, 200, 1000.45, 10, 1));
-//        rect.add(new Rettangolo(170, 220, 150.255, 10, 1));
-//        
-//        rect.add(new Rettangolo(185, 250, 260.77, 10, 1));
-//        rect.add(new Rettangolo(230, 300, 70.98, 10, 1));
-//        rect.add(new Rettangolo(280, 320, 80.255, 10, 1));
-        
-        for(int i = 0; i < 6; i++) {
-        	rect.add(GeneratoreRettangoliCasuali.generaRettangolo());        	
+		//crea istanza casuale del problema, con rettangoli di base massima
+        ArrayList<Rettangolo> rect = new ArrayList<>(); 
+        for(int i = 0; i < 8; i++) {
+        	rect.add(GeneratoreRettangoliCasuali.generaRettangolo(i));        	
         }
         Collections.sort(rect);
         
@@ -29,19 +21,16 @@ public class SimulatedAnnealingAlgorithm {
         double cost_initial_solution = initial_solution.costOfSolution();  
         initial_solution.printSolution();
         System.out.println("costo iniziale " + cost_initial_solution);
-        
+        System.out.println("punto critico: ");
+        System.out.println(initial_solution.puntoCritico().toString());
+         
+               
         Solution best_global_solution = initial_solution.clone();
         double best_global_solution_cost = cost_initial_solution;
-        System.out.println("/////////////////////////");
-                  
-//        for(int i = 0; i < 200; i++) {
-//        	initial_solution = initial_solution.generateNewRandomSolution();
-//        }
-//        
-//        initial_solution.printSolution();
-        
+        System.out.println(" \n" + "/////////////////////////" + "\n");
+                   
         //svolgo l'algoritmo n volte e prendo la soluzione migliore
-        for(int epoch = 0; epoch < 15; epoch++) {
+        for(int epoch = 0; epoch < 20; epoch++) {
             
             Solution current_solution_in_loop = simulatedAnnealing(initial_solution.clone(), best_global_solution_cost);
             double cost_current_solution_in_loop = current_solution_in_loop.costOfSolution();
@@ -51,11 +40,12 @@ public class SimulatedAnnealingAlgorithm {
             	best_global_solution_cost = cost_current_solution_in_loop;
             }
         }
-                
-        
+
         visualizzaSoluzione(best_global_solution, "dopo");
         best_global_solution.printSolution();
         System.out.println("costo finale " + best_global_solution_cost);
+        System.out.println("punto critico: ");
+        System.out.println(best_global_solution.puntoCritico().toString());
         
 	}
 	
@@ -94,8 +84,6 @@ public class SimulatedAnnealingAlgorithm {
             		cost_current_solution = cost_new_solution;
         		}
         	}
-        	
-        	//System.out.println(h_best_solution);
         	
         }//end for 
         

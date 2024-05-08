@@ -2,7 +2,8 @@ import java.util.Random;
 
 public class GeneratoreRettangoliCasuali {
 
-	public static Rettangolo generaRettangolo() throws RectImpossibleException {
+	//crea istanza casuale del problema, con rettangoli di base massima
+	public static Rettangolo generaRettangolo(int id) throws RectImpossibleException {
 		Random rand = new Random();	
 		
 		double altezza_massima = 7.2;
@@ -12,7 +13,7 @@ public class GeneratoreRettangoliCasuali {
 		double area = 30.0 + rand.nextDouble(150.0); //quanti kwh può accumulare in media un'auto
 		int base = (int)(area/altezza_minima);
 		
-		return new Rettangolo(inizio, inizio + base, area, altezza_massima, altezza_minima);
+		return new Rettangolo(id, inizio, inizio + base, area, altezza_massima, altezza_minima);
 
 	}
 	

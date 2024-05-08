@@ -2,28 +2,34 @@ import java.util.Random;
 
 public class Rettangolo implements Comparable<Rettangolo>{
 	
-	public int fase;
-
-	public int base;
+	int identificativo;
+	
 	//è la massima portata erogabile dal plug, collegato ad una certa rete = min(portata plug, portata impiano elettrico)
 	public double altezza, max_altezza_possibile;
+	
 	//è la minima carica che usa la macchina per ricaricarsi
 	public double min_altezza_possibile;
 	
 	public double area;
-	
+	public int base;
+
+	//intervallo temporale massimo, inserito dall'utente
 	public int margine_sinistro_minimo;
 	public int margine_destro_massimo;
 	
 	public int base_massima, base_minima;
 	
+	//intervallo temporale imigliore, da trovare
 	int margine_sinistro, margine_destro;
 	
+	
 	//la prima volta che viene creato, il rettangolo ha base = base massima
-	public Rettangolo(int msm, int mdm, double a, double max_h, double min_h) throws RectImpossibleException {
+	public Rettangolo(int id, int msm, int mdm, double a, double max_h, double min_h) throws RectImpossibleException {
 		if(mdm <= msm) {
 			throw new RectImpossibleException("intervallo di tempo negativo o nullo");
 		}
+		
+		identificativo = id;
 		
 		area = a;
 		
@@ -55,8 +61,12 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		
 	}	
 	
-	//rettangolo che viene creato durante il ciclo for
-	public Rettangolo(int msm, int mdm, int ms, int md, double a, double max_h, double min_h, int bmin, int bmax) throws RectImpossibleException {
+	
+	//rettangolo che viene creato durante il ciclo for, con la generazione casuale
+	public Rettangolo(int id, int msm, int mdm, int ms, int md, double a, double max_h, double min_h, int bmin, int bmax) throws RectImpossibleException {
+		
+		identificativo = id;
+		
 		margine_sinistro_minimo = msm;
 		margine_destro_massimo = mdm;
 		
@@ -70,7 +80,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		min_altezza_possibile = min_h;
 		
 		if(margine_destro > margine_destro_massimo || margine_sinistro < margine_sinistro_minimo) {
-			throw new RectImpossibleException("dimensioni base sballate");
+			throw new RectImpossibleException("dimensioni base sbagliate");
 		}
 		
 		area = a;
@@ -89,8 +99,9 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		altezza = area/base;
 		
 	}
-		
-	//dato il rettangolo, dovrebbe generare un altro rettangolo ammissibile attraverso piccole perturbazioni casuali dei valor idella base
+
+	
+	//dato il rettangolo, dovrebbe generare un altro rettangolo ammissibile attraverso piccole perturbazioni casuali dei valori idella base
 	public Rettangolo randomGeneration(Random rand) throws RectImpossibleException {
 		
 		int nuovo_margine_sinistro, nuovo_margine_destro;
@@ -129,15 +140,12 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		if(nuovo_margine_destro > margine_destro_massimo)
 			nuovo_margine_destro = margine_destro_massimo;
 
-		return new Rettangolo(margine_sinistro_minimo, margine_destro_massimo, nuovo_margine_sinistro, nuovo_margine_destro, 
+		return new Rettangolo(identificativo, margine_sinistro_minimo, margine_destro_massimo, nuovo_margine_sinistro, nuovo_margine_destro, 
 												area, max_altezza_possibile, min_altezza_possibile, base_minima, base_massima);
 	
 	}
-	
-	public String toString() {
-		return "area " + area + ", altezza " + altezza + ", sin " + margine_sinistro + ", des " + margine_destro;
-	}
 
+	
 	@Override
 	public int compareTo(Rettangolo r) {
 		
@@ -150,24 +158,26 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		return 0;
 	}
 	
-	public Rettangolo clone(){
+	
+	public Rettangolo clone() {
+
+		Rettangolo nuovo_rettangolo = null;
+		
 		try {
-			return new Rettangolo(margine_sinistro_minimo, margine_destro_massimo, 
-									margine_sinistro, margine_destro, area, max_altezza_possibile, 
-									min_altezza_possibile, base_minima, base_massima);
+			nuovo_rettangolo = new Rettangolo(identificativo, margine_sinistro_minimo, margine_destro_massimo, margine_sinistro, margine_destro, area, 
+									max_altezza_possibile, min_altezza_possibile, base_minima, base_massima);
 		} 
 		catch (RectImpossibleException e) {
 			e.printStackTrace();
 		}
-		return null;
+		
+		return nuovo_rettangolo;
 	}
 	
-//	public boolean intersect(Rettangolo rect) {
-//	boolean primo_caso = rect.margine_sinistro < margine_destro && margine_destro < rect.margine_destro;	//sta a sinistra dell'alatro
-//	boolean secondo_caso = rect.margine_sinistro < margine_sinistro && margine_sinistro < rect.margine_destro;	//sta a destra dellaltro rect
-//	boolean terzo_caso = margine_sinistro <= rect.margine_sinistro && margine_destro >= rect.margine_destro;	//contiene l'altro rect
-//	boolean quarto_caso = margine_sinistro >= rect.margine_sinistro && margine_destro <= rect.margine_destro;	//è contenuto nell'altro rect
-//	return primo_caso || secondo_caso || terzo_caso || quarto_caso;
-//}
+	
+	public String toString() {
+		return "id " + identificativo + ",  area " + area + ",  altezza " + altezza + ",  start " + margine_sinistro + ",  stop " + margine_destro;
+	}
+	
 }
 
