@@ -14,35 +14,45 @@ public class AlgoritmoSimulatedAnnealing {
 
 	public static int altezzaFinestra = 600;
 	public static int larghezzaFinestra = 600;
+	public static boolean traslazione = true;
 
 	
 	public static void main(String[] args) throws RectImpossibleException {
 				
+		
 		//crea istanza casuale del problema, con rettangoli di base massima
         ArrayList<Rettangolo> rect = new ArrayList<>();         
         for(int i = 0; i < 10; i++) {
-        	rect.add(GeneratoreRettangoliCasuali.generaRettangolo(i));        	
+        	rect.add(GeneratoreRettangoliCasuali.generaRettangolo(i, traslazione));        	
         }
         Collections.sort(rect);
         
-        //il primo problema è sistemare i rect di base massima lungo la linea del tempo in modo che siano ben ditribuiti
-        //Soluzione soluzioneIniziale = new Soluzione(rect);
-        Soluzione soluzioneInizialePrimaDellaTraslazione = new Soluzione(rect); 
-        visualizzaAltezzaSoluzione(soluzioneInizialePrimaDellaTraslazione, "prima della traslazione");
-        visualizzaSfasamentoSoluzione(soluzioneInizialePrimaDellaTraslazione, "prima della traslazione");
-//        soluzioneInizialePrimaDellaTraslazione.printSoluzione();
-                
-        //una volta fatto ciò, si risolve il problema di trovare le dimensioni dei rettangoli migliori
-        Soluzione soluzioneIniziale = SimulatedAnnealingTraslazione.simulatedAnnealingTraslaz(soluzioneInizialePrimaDellaTraslazione);
-        double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();  
-
-//        Soluzione soluzioneIniziale = new Soluzione(rect);
-//        double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();  
+        Soluzione soluzioneIniziale = null;
         
+        if(traslazione) {
+            //il primo problema è sistemare i rect di base massima lungo la linea del tempo in modo che siano ben ditribuiti
+            Soluzione soluzioneInizialePrimaDellaTraslazione = new Soluzione(rect); 
+            soluzioneInizialePrimaDellaTraslazione.printSoluzione();
+            System.out.println("costo finale " + soluzioneInizialePrimaDellaTraslazione.costoSoluzione());
+            System.out.println("altezza max finale " + soluzioneInizialePrimaDellaTraslazione.altezzaMassima());
+            System.out.println("sfasamento max finale " + soluzioneInizialePrimaDellaTraslazione.sfasamento());
+            System.out.println("*****************************");
+            visualizzaAltezzaSoluzione(soluzioneInizialePrimaDellaTraslazione, "prima della traslazione");
+            visualizzaSfasamentoSoluzione(soluzioneInizialePrimaDellaTraslazione, "prima della traslazione");
+            soluzioneIniziale = SimulatedAnnealingTraslazione.simulatedAnnealingTraslaz(soluzioneInizialePrimaDellaTraslazione);
+            //una volta fatto ciò, si risolve il problema di trovare le dimensioni dei rettangoli migliori
+        }
+
+        else {
+        	soluzioneIniziale = new Soluzione(rect);
+        }
+                
+        double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();   
+
         //mostra i dati della soluzione iniziale
         visualizzaAltezzaSoluzione(soluzioneIniziale, "ALTEZZE PRIMA");
         visualizzaSfasamentoSoluzione(soluzioneIniziale, "SFASAMENTO PRIMA");
-//        soluzioneIniziale.printSoluzione();
+        soluzioneIniziale.printSoluzione();
         System.out.println("costo iniziale " + costoSoluzioneIniziale);
         System.out.println("altezza max iniziale " + soluzioneIniziale.altezzaMassima());
         System.out.println("sfasamento max iniziale " + soluzioneIniziale.sfasamento());
@@ -66,12 +76,12 @@ public class AlgoritmoSimulatedAnnealing {
         }
         
         //visualizza dati soluzione migliore trovata
-//        visualizzaAltezzaSoluzione(miglioreSoluzioneGlobale, "ALTEZZE DOPO");
-//        visualizzaSfasamentoSoluzione(miglioreSoluzioneGlobale, "SFASAMENTO DOPO");
-        //miglioreSoluzioneGlobale.printSoluzione();
-//        System.out.println("costo finale " + costoMiglioreSoluzioneGlobale);
-//        System.out.println("altezza max finale " + miglioreSoluzioneGlobale.altezzaMassima());
-//        System.out.println("sfasamento max finale " + miglioreSoluzioneGlobale.sfasamento());
+        visualizzaAltezzaSoluzione(miglioreSoluzioneGlobale, "ALTEZZE DOPO");
+        visualizzaSfasamentoSoluzione(miglioreSoluzioneGlobale, "SFASAMENTO DOPO");
+        miglioreSoluzioneGlobale.printSoluzione();
+        System.out.println("costo finale " + costoMiglioreSoluzioneGlobale);
+        System.out.println("altezza max finale " + miglioreSoluzioneGlobale.altezzaMassima());
+        System.out.println("sfasamento max finale " + miglioreSoluzioneGlobale.sfasamento());
         
         if(miglioreSoluzioneGlobale.sfasamento() > Soluzione.massimoSfasamentoConsentito) {
         	System.out.println("piano impossibile, troppo sbilanciamento di fase nel punto: " + miglioreSoluzioneGlobale.puntoMassimoSfasamento().toString());
