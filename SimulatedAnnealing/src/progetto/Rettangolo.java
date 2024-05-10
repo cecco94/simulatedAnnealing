@@ -28,7 +28,8 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	public int margineSinistro, margineDestro;
 	
 	
-	//la prima volta che viene creato, il rettangolo ha base = base massima
+	//la prima volta che viene creato, il rettangolo ha base = base massima. Se ha più tempo a disposizione, il rettangolo avrà punto di inizio 
+	//margineSinistroMinimo e punto di fine margineSinistroMinimo + baseMassima
 	public Rettangolo(int id, int fase, int msm, int mdm, double a, double max_h, double min_h) throws RectImpossibleException {
 		if(mdm <= msm) {
 			throw new RectImpossibleException("intervallo di tempo negativo o nullo");
@@ -92,7 +93,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		minAltezzaPossibile = min_h;
 		
 		if(margineDestro > margineDestroMassimo || margineSinistro < margineSinistroMinimo) {
-			throw new RectImpossibleException("dimensioni base sbagliate");
+			throw new RectImpossibleException("sei andato oltre il tempo massimo/minimo");
 		}
 		
 		area = a;
@@ -165,6 +166,15 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	
 	}
 
+	
+	//trasla il rettangolo di base massima lungo tutto il tempo a sua disposizione
+	public Rettangolo randomGenerationForTranslationProblem(Random rand) throws RectImpossibleException {
+		int nuovoMargineSinistro = rand.nextInt(margineDestroMassimo - baseMassima);
+		int nuovoMargineDestro = nuovoMargineSinistro + baseMassima;
+		return new Rettangolo(identificativo, fase, margineSinistroMinimo, margineDestroMassimo, nuovoMargineSinistro, nuovoMargineDestro, 
+				area, maxAltezzaPossibile, minAltezzaPossibile, baseMinima, baseMassima);	
+	}
+	
 	
 	@Override
 	public int compareTo(Rettangolo r) {

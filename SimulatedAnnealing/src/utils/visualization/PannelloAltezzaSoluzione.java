@@ -51,7 +51,6 @@ public class PannelloAltezzaSoluzione extends JPanel {
     		 }
     		 
     		 g2.fill(rect);
-    		 
     	 }
     	 
      }
@@ -74,6 +73,8 @@ public class PannelloAltezzaSoluzione extends JPanel {
 	   		g2.fill(rect);
 	   	 }
    	 
+	   	g2.drawLine(0, (int)(AlgoritmoSimulatedAnnealing.altezzaFinestra - soluzione.altezzaMassima()*40), +
+				 AlgoritmoSimulatedAnnealing.larghezzaFinestra, (int)(AlgoritmoSimulatedAnnealing.altezzaFinestra - soluzione.altezzaMassima()*40));
 	}
  
 }

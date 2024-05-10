@@ -13,8 +13,8 @@ public class Soluzione {
 
     public ArrayList<Rettangolo> rettangoli;
     public ArrayList<Punto> puntiDiInizioFineRettangoli;
-    public static double massimoSfasamentoConsentito = 6.5;
-    public static double massimaAltezzaConsentita = 11.0;
+    public static double massimoSfasamentoConsentito = 4.5;
+    public static double massimaAltezzaConsentita = 8.4;
     
     
    public Soluzione(ArrayList<Rettangolo> rettangoli) {
@@ -150,6 +150,21 @@ public class Soluzione {
 		
 	   for(int i = 0; i < rettangoli.size(); i++) {
 		   Rettangolo new_rect = rettangoli.get(i).randomGeneration(rand);
+		   new_list.add(new_rect);
+	   }
+	   
+	   Collections.sort(new_list);
+	   Soluzione new_solution = new Soluzione(new_list);
+	   return new_solution;
+   }
+   
+   
+   public Soluzione generaNuovaSoluzioneCasualeTraslazione() throws RectImpossibleException {
+		Random rand = new Random();
+		ArrayList<Rettangolo> new_list = new ArrayList<>();
+		
+	   for(int i = 0; i < rettangoli.size(); i++) {
+		   Rettangolo new_rect = rettangoli.get(i).randomGenerationForTranslationProblem(rand);
 		   new_list.add(new_rect);
 	   }
 	   

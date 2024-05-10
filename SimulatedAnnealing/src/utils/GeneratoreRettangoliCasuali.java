@@ -18,11 +18,17 @@ public class GeneratoreRettangoliCasuali {
 		
 		int fase = 1 + rand.nextInt(3);
 		
-		double area = 30.0 + rand.nextDouble(150.0); //quanti kwh può accumulare in media un'auto
-		int base = (int)(area/altezza_minima);
-		int inizio = rand.nextInt(480 - base);	//8 ore della notte
+		double area = 30.0 + rand.nextDouble(250.0); //quanti kwh può accumulare in media un'auto
 		
-		return new Rettangolo(id, fase, inizio, inizio + base, area, altezza_massima, altezza_minima);
+		int base = (int)(area/altezza_minima);
+		
+		int inizio = 0; //rand.nextInt(480 - base);	//8 ore della notte
+//		int inizio = rand.nextInt(480 - base);	//8 ore della notte
+
+		int fine = 480;
+		
+		return new Rettangolo(id, fase, inizio, fine, area, altezza_massima, altezza_minima);
+//		return new Rettangolo(id, fase, inizio, inizio + base, area, altezza_massima, altezza_minima);
 
 	}
 	
