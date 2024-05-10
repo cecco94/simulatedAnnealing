@@ -12,14 +12,23 @@ import utils.visualization.PannelloSfasamentoSoluzione;
 
 public class AlgoritmoSimulatedAnnealing {
 
+	public static int altezzaFinestra = 500;
+	public static int larghezzaFinestra = 600;
+
 	
 	public static void main(String[] args) throws RectImpossibleException {
 				
 		//crea istanza casuale del problema, con rettangoli di base massima
-        ArrayList<Rettangolo> rect = new ArrayList<>();         
-        for(int i = 0; i < 8; i++) {
+        ArrayList<Rettangolo> rect = new ArrayList<>(); 
+        
+//        rect.add(new Rettangolo(0, 1, 0, 500, 100.0, 10.0, 1.0));
+//        rect.add(new Rettangolo(1, 2, 40, 90, 100.0, 10.0, 1.0));
+//        rect.add(new Rettangolo(2, 3, 80, 130, 100.0, 10.0, 1.0));
+        
+        for(int i = 0; i < 15; i++) {
         	rect.add(GeneratoreRettangoliCasuali.generaRettangolo(i));        	
         }
+        
         Collections.sort(rect);
         Soluzione soluzioneIniziale = new Soluzione(rect);         
         double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();  
@@ -38,7 +47,7 @@ public class AlgoritmoSimulatedAnnealing {
         double costoMiglioreSoluzioneGlobale = costoSoluzioneIniziale;
                    
         //svolge l'algoritmo n volte e prende la soluzione migliore
-        for(int epoca = 0; epoca < 15; epoca++) {
+        for(int epoca = 0; epoca < 10; epoca++) {
             
             Soluzione soluzioneCorrenteNelLoop = simulatedAnnealing(soluzioneIniziale.clone(), costoSoluzioneIniziale);
             double costoSoluzioneCorrenteNelLoop = soluzioneCorrenteNelLoop.costoSoluzione();
@@ -47,6 +56,7 @@ public class AlgoritmoSimulatedAnnealing {
             	miglioreSoluzioneGlobale = soluzioneCorrenteNelLoop;
             	costoMiglioreSoluzioneGlobale = costoSoluzioneCorrenteNelLoop;
             }
+                        
         }
         
         //visualizza dati soluzione migliore trovata
@@ -57,6 +67,10 @@ public class AlgoritmoSimulatedAnnealing {
         System.out.println("altezza max finale " + miglioreSoluzioneGlobale.altezzaMassima());
         System.out.println("sfasamento max finale " + miglioreSoluzioneGlobale.sfasamento());
         
+        if(miglioreSoluzioneGlobale.sfasamento() > miglioreSoluzioneGlobale.massimoSfasamentoConsentito) {
+        	System.out.println("piano impossibile, troppo sbilanciamento di fase nel punto: " + miglioreSoluzioneGlobale.puntoMassimoSfasamento().toString());
+        }
+        
 	}
 
 	
@@ -66,7 +80,7 @@ public class AlgoritmoSimulatedAnnealing {
 		double costoSoluzioneMigliore = costoSoluzioneCorrente;
 		
         double temperaturaIniziale = 100000000;
-        double raffreddamneto = 0.0003;
+        double raffreddamneto = 0.0001;
         Random rand = new Random();
         
         for(double t = temperaturaIniziale; t > 1; t *= (1 - raffreddamneto)){
@@ -94,7 +108,7 @@ public class AlgoritmoSimulatedAnnealing {
             		costoSoluzioneCorrente = costoNuovaSoluzione;
         		}
         	}
-        	
+
         }
         
         return soluzioneMigliore;
@@ -105,7 +119,7 @@ public class AlgoritmoSimulatedAnnealing {
 		JFrame frame = new JFrame(title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         PannelloAltezzaSoluzione solPan = new PannelloAltezzaSoluzione(soluzione);
-        solPan.setPreferredSize(new Dimension(600, 400));
+        solPan.setPreferredSize(new Dimension(larghezzaFinestra, altezzaFinestra));
         frame.add(solPan);
         frame.pack();
         frame.setVisible(true);
@@ -116,7 +130,7 @@ public class AlgoritmoSimulatedAnnealing {
 		JFrame frame = new JFrame(title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         PannelloSfasamentoSoluzione solPan = new PannelloSfasamentoSoluzione(soluzione);
-        solPan.setPreferredSize(new Dimension(600, 400));
+        solPan.setPreferredSize(new Dimension(larghezzaFinestra, altezzaFinestra));
         frame.add(solPan);
         frame.pack();
         frame.setVisible(true);

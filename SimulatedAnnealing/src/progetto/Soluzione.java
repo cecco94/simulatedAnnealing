@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import utils.ComparatorCosto;
+import utils.ComparatorSommaAltezze;
 import utils.ComparatorSfasamento;
 import utils.ComparatorTempoDiInizio;
 import utils.RectImpossibleException;
@@ -13,7 +13,8 @@ public class Soluzione {
 
     public ArrayList<Rettangolo> rettangoli;
     public ArrayList<Punto> puntiDiInizioFineRettangoli;
-    public double massimoSfasamentoConsentito = 3.5;
+    public static double massimoSfasamentoConsentito = 6.5;
+    public static double massimaAltezzaConsentita = 11.0;
     
     
    public Soluzione(ArrayList<Rettangolo> rettangoli) {
@@ -33,7 +34,7 @@ public class Soluzione {
    
    
    public double costoSoluzione() {
-	   return altezzaMassima() + sfasamento();
+	   return altezzaMassima() + 100*sfasamento();
    }
    
    
@@ -46,12 +47,12 @@ public class Soluzione {
 		   
 		   if(p.punto_di_inizio) {
 			   h += p.altezzaRettangolo;
-			   p.costoNelPunto = h;
+			   p.sommaAltezzeNelPunto = h;
 		   }
 		   
 		   else {
 			   h -= p.altezzaRettangolo;
-			   p.costoNelPunto = h;
+			   p.sommaAltezzeNelPunto = h;
 		   }
 		   
 		   if(h > maxH)
@@ -63,7 +64,7 @@ public class Soluzione {
    
    
    public Punto puntoCritico() {
-	   ComparatorCosto cc = new ComparatorCosto();
+	   ComparatorSommaAltezze cc = new ComparatorSommaAltezze();
 	   Collections.sort(puntiDiInizioFineRettangoli, cc);
 	   
 	   Punto p = puntiDiInizioFineRettangoli.get(0);
@@ -78,6 +79,7 @@ public class Soluzione {
    public double sfasamento() {
 	   double h_fase_1 = 0;
 	   double h_fase_2 = 0;
+	   double h_fase_3 = 0;
 	   double sfasamento_massimo = 0; 
 	   
 	   for(int i = 0; i < puntiDiInizioFineRettangoli.size(); i++) {
@@ -91,6 +93,9 @@ public class Soluzione {
 			   else if(p.r.fase == 2) {
 				   h_fase_2 += p.altezzaRettangolo;
 			   }
+			   else if(p.r.fase == 3) {
+				   h_fase_3 += p.altezzaRettangolo;
+			   }
 		   }
 			   
 		   else {
@@ -100,13 +105,20 @@ public class Soluzione {
 			   else if(p.r.fase == 2) {
 				   h_fase_2 -= p.altezzaRettangolo;
 			   }
+			   else if(p.r.fase == 3) {
+				   h_fase_3 -= p.altezzaRettangolo;
+			   }
 		   }
 		   
-		   double sfasamento = Math.abs(h_fase_1 - h_fase_2);
-		   p.sfasamentoNelPunto = sfasamento;
+		   double sfasamento_fase_1_2 = Math.abs(h_fase_1 - h_fase_2);
+		   double sfasamento_fase_1_3 = Math.abs(h_fase_1 - h_fase_3);
+		   double sfasamento_fase_2_3 = Math.abs(h_fase_2 - h_fase_3);
+
+		   double sfasamento_complessivo = Math.max(sfasamento_fase_1_2, Math.max(sfasamento_fase_1_3, sfasamento_fase_2_3)); 
+		   p.sfasamentoNelPunto = sfasamento_complessivo;
 		   
-		   if(sfasamento > sfasamento_massimo) {
-			   sfasamento_massimo = sfasamento;
+		   if(sfasamento_complessivo > sfasamento_massimo) {
+			   sfasamento_massimo = sfasamento_complessivo;
 		   }
 		   
 	   }

@@ -16,7 +16,7 @@ public class GeneratoreRettangoliCasuali {
 		double altezza_massima = 7.2;
 		double altezza_minima = 2.3;
 		
-		int fase = 1 + rand.nextInt(2);
+		int fase = 1 + rand.nextInt(3);
 		
 		double area = 30.0 + rand.nextDouble(150.0); //quanti kwh può accumulare in media un'auto
 		int base = (int)(area/altezza_minima);

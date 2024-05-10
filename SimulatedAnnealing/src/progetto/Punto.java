@@ -4,7 +4,7 @@ public class Punto {
 
 	public Rettangolo r;
 	public int x;
-	public double altezzaRettangolo, sfasamentoNelPunto = 0, costoNelPunto = 0;
+	public double altezzaRettangolo, sfasamentoNelPunto = 0, sommaAltezzeNelPunto = 0;
 	public boolean punto_di_inizio;
 	
 	
@@ -18,7 +18,7 @@ public class Punto {
 	
 	public String toString() {
 		return "id rect " + r.identificativo + ",  minuto " + x + ",  altezza " + altezzaRettangolo +
-				",  inizio " + punto_di_inizio + ",  costo " + costoNelPunto + ",  sfasamento " + sfasamentoNelPunto;
+				",  fase " + r.fase + ",  costo " + sommaAltezzeNelPunto + ",  sfasamento " + sfasamentoNelPunto;
 	}
 	
 	

@@ -8,6 +8,7 @@ import java.util.Collections;
 
 import javax.swing.JPanel;
 
+import progetto.AlgoritmoSimulatedAnnealing;
 import progetto.Punto;
 import progetto.Rettangolo;
 import progetto.Soluzione;
@@ -38,12 +39,15 @@ public class PannelloAltezzaSoluzione extends JPanel {
     	 for(int i = 0; i < soluzione.rettangoli.size(); i++) {
     		 Rettangolo r = soluzione.rettangoli.get(i);
     		 
-    		 Rectangle2D.Double rect = new Rectangle2D.Double(r.margineSinistro, 400 - r.altezza*40, r.base, r.altezza*40);    		 
+    		 Rectangle2D.Double rect = new Rectangle2D.Double(r.margineSinistro, AlgoritmoSimulatedAnnealing.altezzaFinestra - r.altezza*40, r.base, r.altezza*40);    		 
     		 if((r.fase) == 1) {
     			 g2.setColor(Color.GREEN);
     		 }
     		 else if((r.fase) == 2) {
     			 g2.setColor(Color.BLUE);
+    		 }
+    		 else if((r.fase) == 3) {
+    			 g2.setColor(Color.orange);
     		 }
     		 
     		 g2.fill(rect);
@@ -66,7 +70,7 @@ public class PannelloAltezzaSoluzione extends JPanel {
 	   		Punto p = soluzione.puntiDiInizioFineRettangoli.get(i);
 	   		Punto p2 = soluzione.puntiDiInizioFineRettangoli.get(i + 1);   
 	   		
-	   		Rectangle2D.Double rect = new Rectangle2D.Double(p.x, 400 - p.costoNelPunto*40 - 2, p2.x - p.x, 2);  
+	   		Rectangle2D.Double rect = new Rectangle2D.Double(p.x, AlgoritmoSimulatedAnnealing.altezzaFinestra - p.sommaAltezzeNelPunto*40 - 2, p2.x - p.x, 2);  
 	   		g2.fill(rect);
 	   	 }
    	 

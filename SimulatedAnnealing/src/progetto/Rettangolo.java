@@ -71,6 +71,10 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	
 	//rettangolo che viene creato durante il ciclo for, con la generazione casuale
 	public Rettangolo(int id, int fase, int msm, int mdm, int ms, int md, double a, double max_h, double min_h, int bmin, int bmax) throws RectImpossibleException {
+				
+		if(md <= ms) {
+			throw new RectImpossibleException("intervallo di tempo negativo o nullo");
+		}
 		
 		identificativo = id;
 		this.fase = fase;
@@ -105,6 +109,14 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		}
 
 		altezza = area/base;
+		//se il reect è troppo basso, 
+		if(altezza < minAltezzaPossibile) {
+			margineDestro = margineDestroMassimo;
+			margineSinistro = margineDestroMassimo - baseMassima;
+			base = baseMassima;
+			altezza = area/baseMassima;
+			//throw new RectImpossibleException("troppo basso");
+		}
 		
 	}
 
