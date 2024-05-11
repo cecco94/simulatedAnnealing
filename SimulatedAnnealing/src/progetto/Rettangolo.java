@@ -93,7 +93,8 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		minAltezzaPossibile = min_h;
 		
 		if(margineDestro > margineDestroMassimo || margineSinistro < margineSinistroMinimo) {
-			throw new RectImpossibleException("sei andato oltre il tempo massimo/minimo");
+			throw new RectImpossibleException("sei andato oltre il tempo massimo/minimo " + id + ",  ms " + margineSinistro + ",  md " + margineDestro + 
+												",  msm " + margineSinistroMinimo +  ",  mdm " + margineDestroMassimo);
 		}
 		
 		area = a;
@@ -169,8 +170,24 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	
 	//trasla il rettangolo di base massima lungo tutto il tempo a sua disposizione
 	public Rettangolo randomGenerationForTranslationProblem(Random rand) throws RectImpossibleException {
-		int nuovoMargineSinistro = rand.nextInt(margineDestroMassimo - baseMassima);
-		int nuovoMargineDestro = nuovoMargineSinistro + baseMassima;
+		int nuovoMargineSinistro, nuovoMargineDestro;
+		
+		//sistemiamo il margine sinistro:
+		if(rand.nextBoolean())
+			nuovoMargineSinistro = margineSinistro + 1;
+		else
+			nuovoMargineSinistro = margineSinistro - 1;
+		
+		
+		if(nuovoMargineSinistro < margineSinistroMinimo) {
+			nuovoMargineSinistro = margineSinistroMinimo;
+		}
+		
+		if(nuovoMargineSinistro > margineDestroMassimo - baseMassima) {
+			nuovoMargineSinistro = margineDestroMassimo - baseMassima;
+		}
+		
+		nuovoMargineDestro = nuovoMargineSinistro + baseMassima;
 		return new Rettangolo(identificativo, fase, margineSinistroMinimo, margineDestroMassimo, nuovoMargineSinistro, nuovoMargineDestro, 
 				area, maxAltezzaPossibile, minAltezzaPossibile, baseMinima, baseMassima);	
 	}
@@ -206,7 +223,8 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	
 	
 	public String toString() {
-		return "id " + identificativo + ",  area " + area + ",  altezza " + altezza + ",  start " + margineSinistro + ",  stop " + margineDestro;
+		return "id " + identificativo + ",  fase " + fase + ",  area " + area + ",  altezza " + altezza + ",  start " + margineSinistro + ",  stop " + margineDestro + 
+				",  msm " + margineSinistroMinimo + ",  mdM " + margineDestroMassimo;
 	}
 	
 }

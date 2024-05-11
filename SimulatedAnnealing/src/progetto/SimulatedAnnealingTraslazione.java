@@ -14,7 +14,7 @@ public class SimulatedAnnealingTraslazione {
 		double costoSoluzioneMigliore = costoSoluzioneCorrente;
 		
         double temperaturaIniziale = 100000000;
-        double raffreddamneto = 0.0001;
+        double raffreddamneto = 0.00001;
         Random rand = new Random();
         
         for(double t = temperaturaIniziale; t > 1; t *= (1 - raffreddamneto)){

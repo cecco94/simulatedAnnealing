@@ -23,13 +23,23 @@ public class GeneratoreRettangoliCasuali {
 		if(traslaz) {
 			int inizio = 0;	
 			int fine = 480;
+			
+			//a caso crea richieste con tempi minori di tutta la notte, per simulare richieste più urgenti
+			if(rand.nextInt(4) > 1) {
+				int base = (int)(area/altezza_minima);		
+				inizio = rand.nextInt(480 - base);
+				return new Rettangolo(id, fase, inizio, inizio + base, area, altezza_massima, altezza_minima);
+			}
+			
+			//crea richieste con tempo a disposizione = tutta la notte
 			return new Rettangolo(id, fase, inizio, fine, area, altezza_massima, altezza_minima);
 		}
 		
+		
+		//vecchia versionee che crea istanze con tempi casuali
 		int base = (int)(area/altezza_minima);		
 		int inizio = rand.nextInt(480 - base);	
 		return new Rettangolo(id, fase, inizio, inizio + base, area, altezza_massima, altezza_minima);
-
 	}
 	
 }

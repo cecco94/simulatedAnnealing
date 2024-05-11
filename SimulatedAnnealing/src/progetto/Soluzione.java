@@ -13,8 +13,8 @@ public class Soluzione {
 
     public ArrayList<Rettangolo> rettangoli;
     public ArrayList<Punto> puntiDiInizioFineRettangoli;
-    public static double massimoSfasamentoConsentito = 4.5;
-    public static double massimaAltezzaConsentita = 8.4;
+    public static double massimoSfasamentoConsentito = 3.5;
+    public static double massimaAltezzaConsentita = 7.4;
     
     
    public Soluzione(ArrayList<Rettangolo> rettangoli) {

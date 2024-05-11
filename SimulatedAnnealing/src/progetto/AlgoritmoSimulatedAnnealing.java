@@ -22,9 +22,11 @@ public class AlgoritmoSimulatedAnnealing {
 		
 		//crea istanza casuale del problema, con rettangoli di base massima
         ArrayList<Rettangolo> rect = new ArrayList<>();         
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 5; i++) {
         	rect.add(GeneratoreRettangoliCasuali.generaRettangolo(i, traslazione));        	
         }
+        
+//        rect.add(new Rettangolo(0, 1, 0, 480, 150.4, 7.2, 2.3));      
         Collections.sort(rect);
         
         Soluzione soluzioneIniziale = null;
@@ -63,7 +65,7 @@ public class AlgoritmoSimulatedAnnealing {
         double costoMiglioreSoluzioneGlobale = costoSoluzioneIniziale;
                    
         //svolge l'algoritmo n volte e prende la soluzione migliore
-        for(int epoca = 0; epoca < 5; epoca++) {
+        for(int epoca = 0; epoca < 1; epoca++) {
             
             Soluzione soluzioneCorrenteNelLoop = simulatedAnnealing(soluzioneIniziale.clone(), costoSoluzioneIniziale);
             double costoSoluzioneCorrenteNelLoop = soluzioneCorrenteNelLoop.costoSoluzione();
@@ -100,7 +102,7 @@ public class AlgoritmoSimulatedAnnealing {
 		double costoSoluzioneMigliore = costoSoluzioneCorrente;
 		
         double temperaturaIniziale = 100000000;
-        double raffreddamneto = 0.0001;
+        double raffreddamneto = 0.00001;
         Random rand = new Random();
         
         for(double t = temperaturaIniziale; t > 1; t *= (1 - raffreddamneto)){
