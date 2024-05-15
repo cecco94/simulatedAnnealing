@@ -51,7 +51,9 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		margineDestro = margineDestroMassimo;
 		
 		baseMinima = (int)(Math.ceil(area/maxAltezzaPossibile));
-		baseMassima = (int)(area/minAltezzaPossibile);
+		//quando abbiamo a disposizione tutta la notte, la base massima è la base più grande possibile tenendo l'altezza del rect fattibile
+		//quando abbiamo a disposizione meno tempo, la base massima non è qualla migliore possibile, bensì il massimo intervallo che abbiamo a disposizione
+		baseMassima = Math.min((int)(area/minAltezzaPossibile), mdm - msm);
 		
 		//se il rect con base massima è troppo stretto, non possiamo che riportare un errore
 		base = margineDestro - margineSinistro;
@@ -60,6 +62,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		}
 		
 		//se il rect con base massima è troppo largo, accorciamo il margine destro fino al valore di base massimo ammissibile
+		//accade solo se diamo tutta la notte a disposizione per la ricarica
 		if(base > baseMassima) {
 			margineDestro = margineSinistroMinimo + baseMassima;
 			base = margineDestro - margineSinistro;
@@ -98,12 +101,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		}
 		
 		area = a;
-		//se il rect con base massima è troppo stretto, non possiamo che riportare un errore
-		base = margineDestro - margineSinistro;
-		if(base < baseMinima) {
-			throw new RectImpossibleException("troppo poco tempo per caricare il veicolo");
-		}
-		
+				
 		//se il rect con base massima è troppo largo, lo accorciamo fino al valore di base massimo ammissibile
 		if(base > baseMassima) {
 			margineDestro = margineSinistroMinimo + baseMassima;
@@ -117,7 +115,6 @@ public class Rettangolo implements Comparable<Rettangolo>{
 			margineSinistro = margineDestroMassimo - baseMassima;
 			base = baseMassima;
 			altezza = area/baseMassima;
-			//throw new RectImpossibleException("troppo basso");
 		}
 		
 	}
@@ -170,14 +167,11 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	
 	//trasla il rettangolo di base massima lungo tutto il tempo a sua disposizione
 	public Rettangolo randomGenerationForTranslationProblem(Random rand) throws RectImpossibleException {
-		int nuovoMargineSinistro, nuovoMargineDestro;
+		int nuovoMargineSinistro = margineSinistro;
+		int nuovoMargineDestro = margineDestro;
 		
 		//sistemiamo il margine sinistro:
-		if(rand.nextBoolean())
-			nuovoMargineSinistro = margineSinistro + 1;
-		else
-			nuovoMargineSinistro = margineSinistro - 1;
-		
+		nuovoMargineSinistro += rand.nextInt(-1, 2);
 		
 		if(nuovoMargineSinistro < margineSinistroMinimo) {
 			nuovoMargineSinistro = margineSinistroMinimo;
@@ -225,6 +219,10 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	public String toString() {
 		return "id " + identificativo + ",  fase " + fase + ",  area " + area + ",  altezza " + altezza + ",  start " + margineSinistro + ",  stop " + margineDestro + 
 				",  msm " + margineSinistroMinimo + ",  mdM " + margineDestroMassimo;
+	}
+	
+	public String toFile() {
+		return "id " + identificativo + ",  ora inizio " + margineSinistro + ",  ora fine " + margineDestro;
 	}
 	
 }

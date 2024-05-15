@@ -193,3 +193,9 @@ public class Soluzione {
    
     
 }
+
+
+
+//generazione rettangoli casuali con file e istanze pi generiche
+//tuning dei parametri e controllo di correttezza
+//passi più lunghi nella generazione dei rect
