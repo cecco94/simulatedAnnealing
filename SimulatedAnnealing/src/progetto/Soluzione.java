@@ -16,8 +16,12 @@ public class Soluzione {
     public static double massimoSfasamentoConsentito = 3.5;
     public static double massimaAltezzaConsentita = 7.4;
     
+    //serve per creare il json
+    public Soluzione() {
+    	
+    }
     
-   public Soluzione(ArrayList<Rettangolo> rettangoli) {
+    public Soluzione(ArrayList<Rettangolo> rettangoli) {
     	this.rettangoli = rettangoli;
     	puntiDiInizioFineRettangoli = new ArrayList<>();
     	
@@ -196,6 +200,5 @@ public class Soluzione {
 
 
 
-//generazione rettangoli casuali con file e istanze pi generiche
 //tuning dei parametri e controllo di correttezza
 //passi più lunghi nella generazione dei rect

@@ -1,8 +1,12 @@
 package utils;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import progetto.Rettangolo;
 import progetto.Soluzione;
@@ -11,26 +15,36 @@ import progetto.Soluzione;
 
 public class GeneratoreIstanze {
 	
-	public static int numero_macchine = 1;
-	public static int probabilita_richieste_urgenti = 100;
+
+	public static int numero_richieste_urgenti;
+	
+	//l'altezza dei rect è in kw, questi numeri sono limiti fisici che ho letto su internet
+	public static double altezza_massima = 7.2;
+	public static double altezza_minima = 2.3;
+	
 	
 	//crea istanza casuale di un piano
-	public static Soluzione generaIstanzaProblema() throws RectImpossibleException {
-        ArrayList<Rettangolo> rect = new ArrayList<>(); 
+	public static void generaIstanzaProblema(int macchine_tranquille, int macchine_urgenti) throws RectImpossibleException, JsonMappingException, JsonProcessingException {
+       
+		numero_richieste_urgenti = macchine_urgenti;
+		int numero_macchine = macchine_tranquille + macchine_urgenti;
+		
+		ArrayList<Rettangolo> rect = new ArrayList<>(); 
         for(int i = 0; i < numero_macchine; i++) {
-        	rect.add(generaRettangolo(i));        	
+        	rect.add(generaRettangolo(i));     
         }        
         Collections.sort(rect);
-        return new Soluzione(rect);
-	}
+          
+        Soluzione istanza = new Soluzione(rect);
+        
+        String path = "data/problema_con_" + macchine_tranquille +"_macchine_tranquille_" + macchine_urgenti +"_macchine_urgenti.json";
+        JSON.salvaIstanzaProblema(path, istanza);
+        
+ 	}
 	
 	//crea istanza casuale di una macchina
 	public static Rettangolo generaRettangolo(int id) throws RectImpossibleException {
 		Random rand = new Random();	
-		
-		//l'altezza dei rect è in kw, questi numeri sono limiti fisici che ho letto su internet
-		double altezza_massima = 7.2;
-		double altezza_minima = 2.3;
 		
 		int fase = 1 + rand.nextInt(3);
 		
@@ -40,7 +54,7 @@ public class GeneratoreIstanze {
 		int fine_nottata = 480;
 		
 		//a caso crea richieste con tempi minori di tutta la notte, per simulare richieste più urgenti
-		if(rand.nextInt(100) < probabilita_richieste_urgenti) {
+		if(numero_richieste_urgenti > 0) {
 			
 			int base_massima = (int)(area/altezza_minima);	
 			int base_minima = (int)(Math.ceil(area/altezza_massima));
@@ -50,6 +64,7 @@ public class GeneratoreIstanze {
 			int inizio = rand.nextInt(fine_nottata - base_massima);		//prende come punto di inizio un qualsiasi momento fattibile della nottata
 			int fine =  inizio + base; 
 			
+			numero_richieste_urgenti--;
 			return new Rettangolo(id, fase, inizio, fine, area, altezza_massima, altezza_minima);
 		}
 		
@@ -61,7 +76,14 @@ public class GeneratoreIstanze {
 }
 
 
-
+////ObjectMapper objectMapper = new ObjectMapper();
+//
+//System.out.println(s);
+//
+//Soluzione sol = JSON.stringToObj(s, Soluzione.class);
+//
+////Soluzione sol = objectMapper.readValue(s, Soluzione.class);
+//System.out.println(sol.toString());
 
 
 

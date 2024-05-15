@@ -28,6 +28,10 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	public int margineSinistro, margineDestro;
 	
 	
+	//serve un costruttore vuoto per la creazione del file json
+	public Rettangolo() {
+	}
+	
 	//la prima volta che viene creato, il rettangolo ha base = base massima. Se ha più tempo a disposizione, il rettangolo avrà punto di inizio 
 	//margineSinistroMinimo e punto di fine margineSinistroMinimo + baseMassima
 	public Rettangolo(int id, int fase, int msm, int mdm, double a, double max_h, double min_h) throws RectImpossibleException {
@@ -51,8 +55,8 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		margineDestro = margineDestroMassimo;
 		
 		baseMinima = (int)(Math.ceil(area/maxAltezzaPossibile));
-		//quando abbiamo a disposizione tutta la notte, la base massima è la base più grande possibile tenendo l'altezza del rect fattibile
-		//quando abbiamo a disposizione meno tempo, la base massima non è qualla migliore possibile, bensì il massimo intervallo che abbiamo a disposizione
+		//può capitare che il tempo a disposizione sia maggiore del massimo intervallo che ci mette la macchina a caricarsi (quando abbiamo tutta la notte a disposizione)
+		//può anche capitare invece che il tempo a disposizione sia minore del massimo intervallo che ci mette la macchina a caricarsi
 		baseMassima = Math.min((int)(area/minAltezzaPossibile), mdm - msm);
 		
 		//se il rect con base massima è troppo stretto, non possiamo che riportare un errore
@@ -101,6 +105,8 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		}
 		
 		area = a;
+		
+		base = margineDestro - margineSinistro;
 				
 		//se il rect con base massima è troppo largo, lo accorciamo fino al valore di base massimo ammissibile
 		if(base > baseMassima) {
@@ -169,7 +175,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	public Rettangolo randomGenerationForTranslationProblem(Random rand) throws RectImpossibleException {
 		int nuovoMargineSinistro = margineSinistro;
 		int nuovoMargineDestro = margineDestro;
-		
+				
 		//sistemiamo il margine sinistro:
 		nuovoMargineSinistro += rand.nextInt(-1, 2);
 		
@@ -182,8 +188,13 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		}
 		
 		nuovoMargineDestro = nuovoMargineSinistro + baseMassima;
-		return new Rettangolo(identificativo, fase, margineSinistroMinimo, margineDestroMassimo, nuovoMargineSinistro, nuovoMargineDestro, 
+		
+		Rettangolo nuovo_rect = new Rettangolo(identificativo, fase, margineSinistroMinimo, margineDestroMassimo, nuovoMargineSinistro, nuovoMargineDestro, 
 				area, maxAltezzaPossibile, minAltezzaPossibile, baseMinima, baseMassima);	
+		
+		//System.out.println(nuovo_rect.toString());
+		
+		return nuovo_rect;
 	}
 	
 	
@@ -218,7 +229,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	
 	public String toString() {
 		return "id " + identificativo + ",  fase " + fase + ",  area " + area + ",  altezza " + altezza + ",  start " + margineSinistro + ",  stop " + margineDestro + 
-				",  msm " + margineSinistroMinimo + ",  mdM " + margineDestroMassimo;
+				",  msm " + margineSinistroMinimo + ",  mdM " + margineDestroMassimo + ",  base massima " + baseMassima + ",  base" + base;
 	}
 	
 	public String toFile() {

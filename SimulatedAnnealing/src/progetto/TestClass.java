@@ -6,12 +6,18 @@ import java.util.Random;
 import javax.swing.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import utils.GeneratoreIstanze;
 import utils.JSON;
 import utils.RectImpossibleException;
 import utils.visualization.PannelloAltezzaSoluzione;
 import utils.visualization.PannelloSfasamentoSoluzione;
+
+import java.io.File;
+import java.io.IOException;
+
 
 
 public class TestClass {
@@ -20,16 +26,19 @@ public class TestClass {
 	public static int larghezzaFinestra = 600;
 
 	
-	public static void main(String[] args) throws RectImpossibleException {
+	public static void main(String[] args) throws RectImpossibleException, JsonMappingException, JsonProcessingException {
 			
-        Soluzione soluzioneIniziale = GeneratoreIstanze.generaIstanzaProblema();       
-        double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();   
-
+        //GeneratoreIstanze.generaIstanzaProblema(6, 3);       
+		
+		//carica istanza del problema
+		Soluzione soluzioneIniziale = JSON.caricaIstanzaProblema("data/problema_con_6_tranquille_3_macchine_urgenti.json");
+		double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();
+		
         //mostra i dati della soluzione iniziale
         visualizzaDatiIniziali(soluzioneIniziale, costoSoluzioneIniziale);                           
         
         //long t1 = System.currentTimeMillis();
-        Soluzione migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealingTraslaz(soluzioneIniziale); // (soluzioneIniziale.clone(), costoSoluzioneIniziale);
+        //Soluzione migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealingTraslaz(soluzioneIniziale, costoSoluzioneIniziale); // (soluzioneIniziale.clone(), costoSoluzioneIniziale);
         //long t2 = System.currentTimeMillis() - t1;
         //System.out.println("tempo impiegato " + t2);
         //double costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
@@ -47,6 +56,8 @@ public class TestClass {
 //        	System.out.println("piano impossibile, troppa richiesta di potenza nel punto: " + migliore_soluzione.puntoCritico().toString());
 //        }
         
+
+        		
 	}
 
 	

@@ -8,6 +8,10 @@ public class Punto {
 	public boolean punto_di_inizio;
 	
 	
+	public Punto() {
+		
+	}
+	
 	public Punto(Rettangolo r, int x, double altezza_rect, boolean punto_di_inizio) {
 		super();
 		this.r = r;
