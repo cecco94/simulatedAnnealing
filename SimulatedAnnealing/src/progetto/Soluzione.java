@@ -7,6 +7,8 @@ import utils.ComparatorSommaAltezze;
 import utils.ComparatorSfasamento;
 import utils.ComparatorTempoDiInizio;
 import utils.RectImpossibleException;
+import utils.RettangoloSemplificato;
+import utils.SoluzioneSemplificata;
 
 
 public class Soluzione {
@@ -195,10 +197,17 @@ public class Soluzione {
 	   }
    }
    
+   public SoluzioneSemplificata creaSoluzioneDaMettereNelJson() {
+		ArrayList<RettangoloSemplificato> rettangoliSoluzione = new ArrayList<>();
+		for(int i = 0; i < rettangoli.size(); i++) {
+			Rettangolo r = rettangoli.get(i);
+			rettangoliSoluzione.add(new RettangoloSemplificato(r.identificativo, r.fase, r.area, r.margineSinistro, r.margineDestro));
+		}
+	   return new SoluzioneSemplificata(rettangoliSoluzione, sfasamento(), altezzaMassima(), costoSoluzione());
+   }
+   
     
 }
 
 
-
-//tuning dei parametri e controllo di correttezza
 //passi più lunghi nella generazione dei rect

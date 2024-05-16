@@ -35,15 +35,26 @@ public class PannelloAltezzaSoluzione extends JPanel {
 
 	private void drawAxes(Graphics2D g2) {
 		g2.setColor(Color.black);
-		int altezza = 5;
+		int spessore = 5;
 		for(int x = 0; x < TestClass.larghezzaFinestra; x += 10) {
 			if(x % 60 == 0) {
-				altezza = 10;
+				spessore = 10;
 			}
 			else {
-				altezza = 5;
+				spessore = 5;
 			}
-			g2.drawLine(x, TestClass.altezzaFinestra - altezza, x, TestClass.altezzaFinestra + altezza);
+			g2.drawLine(x, TestClass.altezzaFinestra - spessore, x, TestClass.altezzaFinestra + spessore);
+		}
+		
+		g2.drawLine(TestClass.larghezzaFinestra - 5, 0, TestClass.larghezzaFinestra - 5, TestClass.altezzaFinestra);
+		for(int y = 0; y < TestClass.altezzaFinestra; y += 10) {
+			if(y % 40 == 0) {
+				spessore = 10;
+			}
+			else {
+				spessore = 5;
+			}
+			g2.drawLine(TestClass.larghezzaFinestra - spessore, y, TestClass.larghezzaFinestra + spessore, y);
 		}
 	}
 

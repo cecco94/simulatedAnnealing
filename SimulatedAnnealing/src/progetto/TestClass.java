@@ -11,7 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import utils.GeneratoreIstanze;
 import utils.JSON;
+import utils.PlanImpossibleException;
 import utils.RectImpossibleException;
+import utils.SoluzioneSemplificata;
 import utils.visualization.PannelloAltezzaSoluzione;
 import utils.visualization.PannelloSfasamentoSoluzione;
 
@@ -25,45 +27,76 @@ public class TestClass {
 	public static int altezzaFinestra = 600;
 	public static int larghezzaFinestra = 600;
 
+	public static boolean newProblem = false, conTraslazione = false, saveSolution = false;
 	
-	public static void main(String[] args) throws RectImpossibleException, JsonMappingException, JsonProcessingException {
-			
-        //GeneratoreIstanze.generaIstanzaProblema(6, 3);       
+	public static int macchine_tranquille = 4, macchine_urgnti = 0;
+	
+	public static void main(String[] args) throws RectImpossibleException, JsonMappingException, JsonProcessingException, PlanImpossibleException {
+		
+		if(newProblem) {
+			GeneratoreIstanze.generaIstanzaProblema(macchine_tranquille, macchine_urgnti);  
+			return;
+		}
 		
 		//carica istanza del problema
-		Soluzione soluzioneIniziale = JSON.caricaIstanzaProblema("data/problema_con_6_tranquille_3_macchine_urgenti.json");
+		Soluzione soluzioneIniziale = JSON.caricaIstanzaProblema("data/istanze/problema_con_4_macchine_tranquille_0_macchine_urgenti.json");
 		double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();
-		
-        //mostra i dati della soluzione iniziale
         visualizzaDatiIniziali(soluzioneIniziale, costoSoluzioneIniziale);                           
         
-        //long t1 = System.currentTimeMillis();
-        //Soluzione migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealingTraslaz(soluzioneIniziale, costoSoluzioneIniziale); // (soluzioneIniziale.clone(), costoSoluzioneIniziale);
-        //long t2 = System.currentTimeMillis() - t1;
-        //System.out.println("tempo impiegato " + t2);
-        //double costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
+        Soluzione migliore_soluzione;
+        double costo_migliore_soluzione;
+        
+        if(conTraslazione) {
+        	migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealingTraslaz(soluzioneIniziale, costoSoluzioneIniziale);
+            costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
             
-        //visualizza dati soluzione migliore trovata
-        //visualizzaDatiFinali(migliore_soluzione, costo_migliore_soluzione);
+            visualizzaDatiIntermedi(migliore_soluzione, costo_migliore_soluzione);
+            
+            migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealing(migliore_soluzione, costo_migliore_soluzione);
+            costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
+        }
         
-      
-        //controlla se la soluzione è fattibile
-//        if(migliore_soluzione.sfasamento() > Soluzione.massimoSfasamentoConsentito) {
-//        	System.out.println("piano impossibile, troppo sbilanciamento di fase nel punto: " + migliore_soluzione.puntoMassimoSfasamento().toString());
-//        }
-//        
-//        if(migliore_soluzione.costoSoluzione() > Soluzione.massimaAltezzaConsentita) {
-//        	System.out.println("piano impossibile, troppa richiesta di potenza nel punto: " + migliore_soluzione.puntoCritico().toString());
-//        }
+        else {
+        	migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealing(soluzioneIniziale, costoSoluzioneIniziale);
+            costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
+        }
         
-
+        visualizzaDatiFinali(migliore_soluzione, costo_migliore_soluzione);
+        controllaSoluzione(migliore_soluzione);
         		
 	}
 
 	
+	private static void controllaSoluzione(Soluzione migliore_soluzione) throws PlanImpossibleException, JsonMappingException, JsonProcessingException {
+	 if(migliore_soluzione.sfasamento() > Soluzione.massimoSfasamentoConsentito) {
+        	throw new PlanImpossibleException("piano impossibile, troppo sbilanciamento di fase nel punto: " + migliore_soluzione.puntoMassimoSfasamento().toString());
+        }
+        
+        if(migliore_soluzione.costoSoluzione() > Soluzione.massimaAltezzaConsentita) {
+        	throw new PlanImpossibleException("piano impossibile, troppa richiesta di potenza nel punto: " + migliore_soluzione.puntoCritico().toString());
+        }  
+        
+        if(saveSolution) {
+        	SoluzioneSemplificata sol = migliore_soluzione.creaSoluzioneDaMettereNelJson();
+        	JSON.salvaSoluzione("data/soluzioni/", "problema_con_" + macchine_tranquille +"_macchine_tranquille_" + macchine_urgnti + "_macchine_urgenti.json", sol);
+        }
+	}
+
+
+	private static void visualizzaDatiIntermedi(Soluzione migliore_soluzione, double costo_migliore_soluzione) {
+		visualizzaAltezzaSoluzione(migliore_soluzione, "ALTEZZE DOPO TRASLAZIONE");
+        visualizzaSfasamentoSoluzione(migliore_soluzione, "SFASAMENTO DOPO TRASLAZIONE");
+        migliore_soluzione.printSoluzione();
+        System.out.println("costo dopo traslaz " + costo_migliore_soluzione);
+        System.out.println("altezza max dopo traslaz " + migliore_soluzione.altezzaMassima());
+        System.out.println("sfasamento max dopo traslaz " + migliore_soluzione.sfasamento());
+        System.out.println(" \n" + "/+++++++++++++++++++++++++++" + "\n");
+	}
+	
+	
 	private static void visualizzaDatiFinali(Soluzione migliore_soluzione, double costo_migliore_soluzione) {
-		visualizzaAltezzaSoluzione(migliore_soluzione, "ALTEZZE DOPO");
-        visualizzaSfasamentoSoluzione(migliore_soluzione, "SFASAMENTO DOPO");
+		visualizzaAltezzaSoluzione(migliore_soluzione, "ALTEZZE FINALI");
+        visualizzaSfasamentoSoluzione(migliore_soluzione, "SFASAMENTO FINALE");
         migliore_soluzione.printSoluzione();
         System.out.println("costo finale " + costo_migliore_soluzione);
         System.out.println("altezza max finale " + migliore_soluzione.altezzaMassima());

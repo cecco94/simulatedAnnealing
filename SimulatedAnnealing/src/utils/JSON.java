@@ -48,18 +48,22 @@ public class JSON {
 		return sol;
 	}
 	
-	
 
-
-	public static void salvaIstanzaProblema(String path, Soluzione istanza) throws JsonMappingException, JsonProcessingException {
+	public static void salvaIstanzaProblema(String path, String filename, Soluzione istanza) throws JsonMappingException, JsonProcessingException {
 		//salva il problema nella cartella data
+		String nomeCompleto = path+filename;
         try {
-            File myObj = new File(path);
+            File myObj = new File(nomeCompleto);
             if (myObj.createNewFile()) {
               System.out.println("File created: " + myObj.getName());
             }
             else {
-              System.out.println("File already exists.");
+            	int i = 1;
+            	while(!myObj.createNewFile()) {
+            		i++;
+            		nomeCompleto = path+ i +filename;
+            		myObj = new File(nomeCompleto);
+            	}
             }
           } 
         	catch (IOException e) {
@@ -68,8 +72,9 @@ public class JSON {
           }
         
         String s = JSON.objToString(istanza);
+        
         try {
-            FileWriter myWriter = new FileWriter(path);
+            FileWriter myWriter = new FileWriter(nomeCompleto);
             myWriter.write(s);
             myWriter.close();
             System.out.println("Successfully wrote to the file.");
@@ -81,7 +86,38 @@ public class JSON {
 	}
 	
 	
-	
-	
+	public static void salvaSoluzione(String path, String filename, SoluzioneSemplificata soluzione) throws JsonMappingException, JsonProcessingException {
+		String nomeCompleto = path+filename;
+        try {
+            File myObj = new File(nomeCompleto);
+            if (myObj.createNewFile()) {
+              System.out.println("File created: " + myObj.getName());
+            }
+            else {
+            	int i = 1;
+            	while(!myObj.createNewFile()) {
+            		i++;
+            		nomeCompleto = path+ i +filename;
+            		myObj = new File(nomeCompleto);
+            	}
+            }
+          } 
+        	catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+          }
+        
+        String s = JSON.objToString(soluzione);
+        
+        try {
+            FileWriter myWriter = new FileWriter(nomeCompleto);
+            myWriter.write(s);
+            myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+          } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+          }
+	}
 	
 }

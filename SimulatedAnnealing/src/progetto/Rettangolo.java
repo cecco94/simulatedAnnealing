@@ -1,7 +1,9 @@
 package progetto;
+import java.util.ArrayList;
 import java.util.Random;
 
 import utils.RectImpossibleException;
+import utils.RettangoloSemplificato;
 
 public class Rettangolo implements Comparable<Rettangolo>{
 	
@@ -132,10 +134,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		int nuovoMargineSinistro, nuovoMargineDestro;
 		
 		//sistemiamo il margine sinistro:
-		if(rand.nextBoolean())
-			nuovoMargineSinistro = margineSinistro + 1;
-		else
-			nuovoMargineSinistro = margineSinistro - 1;
+		nuovoMargineSinistro = margineSinistro + rand.nextInt(-15, 16);
 		
 		//se il margine sisnitro è andato troppo a sinistra
 		if(nuovoMargineSinistro < margineSinistroMinimo)
@@ -147,10 +146,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		}
 			
 		//sistemiamo ora il margine destro
-		if(rand.nextBoolean())
-			nuovoMargineDestro = margineDestro + 1;
-		else
-			nuovoMargineDestro = margineDestro - 1;
+		nuovoMargineDestro = margineDestro + rand.nextInt(-15, 16);
 		
 		//se abbiamo stretto troppo, dobbiamo allargare il rect
 		if(nuovoMargineDestro - nuovoMargineSinistro < baseMinima) {
@@ -177,7 +173,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		int nuovoMargineDestro = margineDestro;
 				
 		//sistemiamo il margine sinistro:
-		nuovoMargineSinistro += rand.nextInt(-1, 2);
+		nuovoMargineSinistro += rand.nextInt(-10, 11);
 		
 		if(nuovoMargineSinistro < margineSinistroMinimo) {
 			nuovoMargineSinistro = margineSinistroMinimo;
@@ -234,6 +230,10 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	
 	public String toFile() {
 		return "id " + identificativo + ",  ora inizio " + margineSinistro + ",  ora fine " + margineDestro;
+	}
+	
+	public RettangoloSemplificato generaRectDaMettereNelJson() {
+		return new RettangoloSemplificato(identificativo, fase, area, margineSinistro, margineDestro);
 	}
 	
 }

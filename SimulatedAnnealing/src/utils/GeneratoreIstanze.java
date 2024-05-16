@@ -37,8 +37,9 @@ public class GeneratoreIstanze {
           
         Soluzione istanza = new Soluzione(rect);
         
-        String path = "data/problema_con_" + macchine_tranquille +"_macchine_tranquille_" + macchine_urgenti +"_macchine_urgenti.json";
-        JSON.salvaIstanzaProblema(path, istanza);
+        String path = "data/";
+        String filename = "problema_con_" + macchine_tranquille +"_macchine_tranquille_" + macchine_urgenti +"_macchine_urgenti.json";
+        JSON.salvaIstanzaProblema(path, filename, istanza);
         
  	}
 	

@@ -11,7 +11,7 @@ public class AlgoritmoSimulatedAnnealing {
 		Soluzione soluzioneMigliore = soluzioneCorrente.clone();
 		double costoSoluzioneMigliore = costoSoluzioneCorrente;
 		
-        double temperaturaIniziale = 10000000;
+        double temperaturaIniziale = 100000000;
         double raffreddamneto = 0.00001;
         Random rand = new Random();
         
