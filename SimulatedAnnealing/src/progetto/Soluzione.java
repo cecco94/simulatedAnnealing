@@ -3,25 +3,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import utils.ComparatorSommaAltezze;
-import utils.ComparatorSfasamento;
-import utils.ComparatorTempoDiInizio;
 import utils.RectImpossibleException;
 import utils.RettangoloSemplificato;
 import utils.SoluzioneSemplificata;
+import utils.ordinamento.ComparatorSfasamento;
+import utils.ordinamento.ComparatorSommaAltezze;
+import utils.ordinamento.ComparatorTempoDiInizio;
 
 
 public class Soluzione {
 
     public ArrayList<Rettangolo> rettangoli;
     public ArrayList<Punto> puntiDiInizioFineRettangoli;
-    public static double massimoSfasamentoConsentito = 3.5;
+    public static double massimoSfasamentoConsentito = 4.2;
     public static double massimaAltezzaConsentita = 7.4;
     
     //serve per creare il json
-    public Soluzione() {
-    	
-    }
+    public Soluzione() {  }
+    
     
     public Soluzione(ArrayList<Rettangolo> rettangoli) {
     	this.rettangoli = rettangoli;
@@ -69,19 +68,6 @@ public class Soluzione {
    }
    
    
-   public Punto puntoCritico() {
-	   ComparatorSommaAltezze cc = new ComparatorSommaAltezze();
-	   Collections.sort(puntiDiInizioFineRettangoli, cc);
-	   
-	   Punto p = puntiDiInizioFineRettangoli.get(0);
-	   
-	   ComparatorTempoDiInizio cs = new ComparatorTempoDiInizio();
-	   Collections.sort(puntiDiInizioFineRettangoli, cs);
-	   
-	   return p;
-   }
-   
-   
    public double sfasamento() {
 	   double h_fase_1 = 0;
 	   double h_fase_2 = 0;
@@ -101,6 +87,11 @@ public class Soluzione {
 			   }
 			   else if(p.r.fase == 3) {
 				   h_fase_3 += p.altezzaRettangolo;
+			   }
+			   else if(p.r.fase == 4) {
+				   h_fase_1 += p.altezzaRettangolo/3;
+				   h_fase_2 += p.altezzaRettangolo/3;
+				   h_fase_3 += p.altezzaRettangolo/3;
 			   }
 		   }
 			   
@@ -135,8 +126,21 @@ public class Soluzione {
 		   
 	   return sfasamento_massimo;
    }
-
    
+   
+   public Punto puntoMaxAltezza() {
+	   ComparatorSommaAltezze cc = new ComparatorSommaAltezze();
+	   Collections.sort(puntiDiInizioFineRettangoli, cc);
+	   
+	   Punto p = puntiDiInizioFineRettangoli.get(0);
+	   
+	   ComparatorTempoDiInizio cs = new ComparatorTempoDiInizio();
+	   Collections.sort(puntiDiInizioFineRettangoli, cs);
+	   
+	   return p;
+   }
+   
+  
    public Punto puntoMassimoSfasamento() {
 	   ComparatorSfasamento c = new ComparatorSfasamento();
 	   Collections.sort(puntiDiInizioFineRettangoli, c);
@@ -197,6 +201,7 @@ public class Soluzione {
 	   }
    }
    
+   
    public SoluzioneSemplificata creaSoluzioneDaMettereNelJson() {
 		ArrayList<RettangoloSemplificato> rettangoliSoluzione = new ArrayList<>();
 		for(int i = 0; i < rettangoli.size(); i++) {
@@ -209,5 +214,3 @@ public class Soluzione {
     
 }
 
-
-//passi più lunghi nella generazione dei rect

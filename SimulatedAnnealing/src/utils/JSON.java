@@ -57,11 +57,12 @@ public class JSON {
             if (myObj.createNewFile()) {
               System.out.println("File created: " + myObj.getName());
             }
+            //se già esiste il file, ne crea un altro con un numero più alto
             else {
             	int i = 1;
             	while(!myObj.createNewFile()) {
             		i++;
-            		nomeCompleto = path+ i +filename;
+            		nomeCompleto = path+ i +filename.substring(1);
             		myObj = new File(nomeCompleto);
             	}
             }

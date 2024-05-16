@@ -11,11 +11,13 @@ public class AlgoritmoSimulatedAnnealing {
 		Soluzione soluzioneMigliore = soluzioneCorrente.clone();
 		double costoSoluzioneMigliore = costoSoluzioneCorrente;
 		
-        double temperaturaIniziale = 100000000;
+        double temperaturaIniziale = 10000000;
         double raffreddamneto = 0.00001;
         Random rand = new Random();
         
+        long start = System.currentTimeMillis();
         int i = 0;
+        //la temperatura diminuisce in modo geometrico
         for(double t = temperaturaIniziale; t > 1; t *= (1 - raffreddamneto)){
         	i++;
         	//genera nuova soluzione tramite piccole perturbazioni casuali della soluzione attuale
@@ -43,7 +45,8 @@ public class AlgoritmoSimulatedAnnealing {
         	}
 
         }
-        //System.out.println("iterazioni " + i);   
+        System.out.println("tempo impiegato " + (System.currentTimeMillis() - start)/1000.0 + " secondi");
+        System.out.println("iterazioni " + i);   
         return soluzioneMigliore;
 	}
 
@@ -54,13 +57,14 @@ public class AlgoritmoSimulatedAnnealing {
 			Soluzione soluzioneMigliore = soluzioneCorrente.clone();
 			double costoSoluzioneMigliore = costoSoluzioneCorrente;
 			
-	        double temperaturaIniziale = 10000000;
+	        double temperaturaIniziale = 100000000;
 	        double raffreddamneto = 0.00001;
 	        Random rand = new Random();
 	        
+	        long start = System.currentTimeMillis();
 	        int i = 0;
 	        for(double t = temperaturaIniziale; t > 1; t *= (1 - raffreddamneto)){
-	        	i++;
+	        	//i++;
 	        	//genera nuova soluzione tramite piccole perturbazioni casuali della soluzione attuale
 	        	Soluzione nuovaSoluzione = soluzioneCorrente.generaNuovaSoluzioneCasualeTraslazione();
 	        	
@@ -86,6 +90,7 @@ public class AlgoritmoSimulatedAnnealing {
 	        	}
 
 	        }
+	        //System.out.println("tempo impiegato " + (System.currentTimeMillis() - start)/1000.0 + " secondi");
 	        //System.out.println("iterazioni " + i);   
 	        return soluzioneMigliore;
 	}

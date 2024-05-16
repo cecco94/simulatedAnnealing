@@ -4,15 +4,20 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Collections;
 
 import javax.swing.JPanel;
 
+import lombok.Data;
 import progetto.TestClass;
+import utils.RettangoloSemplificato;
+import utils.SoluzioneSemplificata;
 import progetto.Punto;
 import progetto.Rettangolo;
 import progetto.Soluzione;
 
+@Data
 public class PannelloAltezzaSoluzione extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -75,6 +80,9 @@ public class PannelloAltezzaSoluzione extends JPanel {
     		 }
     		 else if((r.fase) == 3) {
     			 g2.setColor(Color.orange);
+    		 }
+    		 else if((r.fase) == 4) {
+    			 g2.setColor(Color.magenta);
     		 }
     		 
     		 g2.fill(rect);

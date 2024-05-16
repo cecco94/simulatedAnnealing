@@ -2,9 +2,11 @@ package utils;
 
 import java.util.ArrayList;
 
-public class SoluzioneSemplificata {
+import lombok.Data;
 
-    public ArrayList<RettangoloSemplificato> rettangoli;
+@Data
+public class SoluzioneSemplificata {
+    ArrayList<RettangoloSemplificato> rettangoli;
     double sfasamento;
     double altezzaMax;
     double costo;

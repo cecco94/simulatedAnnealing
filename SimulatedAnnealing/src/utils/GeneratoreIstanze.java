@@ -19,7 +19,7 @@ public class GeneratoreIstanze {
 	public static int numero_richieste_urgenti;
 	
 	//l'altezza dei rect è in kw, questi numeri sono limiti fisici che ho letto su internet
-	public static double altezza_massima = 7.2;
+	public static double altezza_massima = Soluzione.massimaAltezzaConsentita/2;
 	public static double altezza_minima = 2.3;
 	
 	
@@ -37,8 +37,8 @@ public class GeneratoreIstanze {
           
         Soluzione istanza = new Soluzione(rect);
         
-        String path = "data/";
-        String filename = "problema_con_" + macchine_tranquille +"_macchine_tranquille_" + macchine_urgenti +"_macchine_urgenti.json";
+        String path = "data/istanze/";
+        String filename = "1_problema_con_" + macchine_tranquille +"_macchine_tranquille_" + macchine_urgenti +"_macchine_urgenti.json";
         JSON.salvaIstanzaProblema(path, filename, istanza);
         
  	}
@@ -47,7 +47,7 @@ public class GeneratoreIstanze {
 	public static Rettangolo generaRettangolo(int id) throws RectImpossibleException {
 		Random rand = new Random();	
 		
-		int fase = 1 + rand.nextInt(3);
+		int fase = 1 + rand.nextInt(4);		//fase = 4 dignifica che la macchina usa tutte e tre le fasi
 		
 		double area = 30.0 + rand.nextDouble(250.0); //quanti kwh può accumulare in media un'auto
 
@@ -74,6 +74,22 @@ public class GeneratoreIstanze {
 	}
 	
 	
+	public static void generaIstanzaSpecifica() throws RectImpossibleException, JsonMappingException, JsonProcessingException {
+		int macchine_tranquille = 0;
+		int macchine_urgenti = 0;
+		ArrayList<Rettangolo> rect = new ArrayList<>();
+		rect.add(new Rettangolo(1, 1, 0, 100, 300.0, 10, 3));
+		rect.add(new Rettangolo(2, 4, 80, 180, 300.0, 10, 3));
+//		rect.add(new Rettangolo(0, 0, 0, 0, 0, 0, 0));
+//		rect.add(new Rettangolo(0, 0, 0, 0, 0, 0, 0));
+//		rect.add(new Rettangolo(0, 0, 0, 0, 0, 0, 0));
+
+		
+		Soluzione istanzaSpecifica = new Soluzione(rect);
+		String path = "data/istanze/";
+        String filename = "1_problema_con_" + macchine_tranquille +"_macchine_tranquille_" + macchine_urgenti +"_macchine_urgenti.json";
+        JSON.salvaIstanzaProblema(path, filename, istanzaSpecifica);
+	}
 }
 
 

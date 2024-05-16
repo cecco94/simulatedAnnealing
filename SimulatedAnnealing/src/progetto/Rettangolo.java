@@ -1,5 +1,4 @@
 package progetto;
-import java.util.ArrayList;
 import java.util.Random;
 
 import utils.RectImpossibleException;
@@ -134,7 +133,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		int nuovoMargineSinistro, nuovoMargineDestro;
 		
 		//sistemiamo il margine sinistro:
-		nuovoMargineSinistro = margineSinistro + rand.nextInt(-15, 16);
+		nuovoMargineSinistro = margineSinistro + rand.nextInt(-10, 11);
 		
 		//se il margine sisnitro è andato troppo a sinistra
 		if(nuovoMargineSinistro < margineSinistroMinimo)
@@ -173,7 +172,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		int nuovoMargineDestro = margineDestro;
 				
 		//sistemiamo il margine sinistro:
-		nuovoMargineSinistro += rand.nextInt(-10, 11);
+		nuovoMargineSinistro += rand.nextInt(-15, 16);
 		
 		if(nuovoMargineSinistro < margineSinistroMinimo) {
 			nuovoMargineSinistro = margineSinistroMinimo;
@@ -228,9 +227,6 @@ public class Rettangolo implements Comparable<Rettangolo>{
 				",  msm " + margineSinistroMinimo + ",  mdM " + margineDestroMassimo + ",  base massima " + baseMassima + ",  base" + base;
 	}
 	
-	public String toFile() {
-		return "id " + identificativo + ",  ora inizio " + margineSinistro + ",  ora fine " + margineDestro;
-	}
 	
 	public RettangoloSemplificato generaRectDaMettereNelJson() {
 		return new RettangoloSemplificato(identificativo, fase, area, margineSinistro, margineDestro);

@@ -1,13 +1,9 @@
 package progetto;
 import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
 import javax.swing.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import utils.GeneratoreIstanze;
 import utils.JSON;
@@ -17,8 +13,6 @@ import utils.SoluzioneSemplificata;
 import utils.visualization.PannelloAltezzaSoluzione;
 import utils.visualization.PannelloSfasamentoSoluzione;
 
-import java.io.File;
-import java.io.IOException;
 
 
 
@@ -27,25 +21,34 @@ public class TestClass {
 	public static int altezzaFinestra = 600;
 	public static int larghezzaFinestra = 600;
 
-	public static boolean newProblem = false, conTraslazione = false, saveSolution = false;
+	public static boolean newProblem = false, conTraslazione = true, saveSolution = false, istanzaSpecifica = false;
 	
-	public static int macchine_tranquille = 4, macchine_urgnti = 0;
+	public static int macchine_tranquille = 9, macchine_urgnti = 0;
+	
+	public static int istanza = 1;
+	
 	
 	public static void main(String[] args) throws RectImpossibleException, JsonMappingException, JsonProcessingException, PlanImpossibleException {
 		
-		if(newProblem) {
+		if(newProblem) {			
 			GeneratoreIstanze.generaIstanzaProblema(macchine_tranquille, macchine_urgnti);  
+			return;
+		}	
+		
+		if(istanzaSpecifica) {
+			GeneratoreIstanze.generaIstanzaSpecifica();  
 			return;
 		}
 		
 		//carica istanza del problema
-		Soluzione soluzioneIniziale = JSON.caricaIstanzaProblema("data/istanze/problema_con_4_macchine_tranquille_0_macchine_urgenti.json");
+		Soluzione soluzioneIniziale = JSON.caricaIstanzaProblema("data/istanze/" + istanza + "_problema_con_"+macchine_tranquille+"_macchine_tranquille_"+macchine_urgnti+"_macchine_urgenti.json");
 		double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();
         visualizzaDatiIniziali(soluzioneIniziale, costoSoluzioneIniziale);                           
         
         Soluzione migliore_soluzione;
         double costo_migliore_soluzione;
         
+        //per fare dei test, la soluzione sembra migliorare se prima distribuisco i rect nel tempo
         if(conTraslazione) {
         	migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealingTraslaz(soluzioneIniziale, costoSoluzioneIniziale);
             costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
@@ -56,6 +59,7 @@ public class TestClass {
             costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
         }
         
+        //algoritmo normale
         else {
         	migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealing(soluzioneIniziale, costoSoluzioneIniziale);
             costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
@@ -73,7 +77,7 @@ public class TestClass {
         }
         
         if(migliore_soluzione.costoSoluzione() > Soluzione.massimaAltezzaConsentita) {
-        	throw new PlanImpossibleException("piano impossibile, troppa richiesta di potenza nel punto: " + migliore_soluzione.puntoCritico().toString());
+        	throw new PlanImpossibleException("piano impossibile, troppa richiesta di potenza nel punto: " + migliore_soluzione.puntoMaxAltezza().toString());
         }  
         
         if(saveSolution) {
@@ -139,3 +143,20 @@ public class TestClass {
 	}
 	
 }
+
+
+
+
+//grafici da fare: 
+//tempo di esecuzione in funzione del raffreddamento
+//costo in funzione del raffreddamento
+//costo in funzione del passo nella generazione di nuove soluzioni
+//costo de prima facciamo la traslazione
+
+
+
+
+
+
+
+

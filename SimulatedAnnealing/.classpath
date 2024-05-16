@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="C:/Users/nicco/OneDrive/Desktop/Videogame/jackson-core-2.15.3.jar"/>
 	<classpathentry kind="lib" path="C:/Users/nicco/OneDrive/Desktop/Videogame/jackson-dataformat-yaml-2.15.3.jar"/>
 	<classpathentry kind="lib" path="C:/Users/nicco/OneDrive/Desktop/Videogame/jackson-annotations-2.15.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/nicco/Downloads/lombok.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
