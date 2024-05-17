@@ -51,6 +51,55 @@ public class AlgoritmoSimulatedAnnealing {
 	}
 
 	
+	public static double croometraSimulatedAnnealing(Soluzione soluzioneCorrente, double costoSoluzioneCorrente, double temp) throws RectImpossibleException {
+		//in principio la soluzione migliore è quella iniziale
+		Soluzione soluzioneMigliore = soluzioneCorrente.clone();
+		double costoSoluzioneMigliore = costoSoluzioneCorrente;
+		
+        double temperaturaIniziale = temp;
+        double raffreddamneto = 0.00001;
+        Random rand = new Random();
+        
+		long inizio = System.currentTimeMillis();
+        
+        //la temperatura diminuisce in modo geometrico
+        for(double t = temperaturaIniziale; t > 1; t *= (1 - raffreddamneto)){
+        	//genera nuova soluzione tramite piccole perturbazioni casuali della soluzione attuale
+        	Soluzione nuovaSoluzione = soluzioneCorrente.generaNuovaSoluzioneCasuale();
+        	
+        	//se il costo della nuova soluzione è < costo vecchia soluzione, accetta la nuova soluzione e aggiorna la soluzione migliore, se serve
+        	double costoNuovaSoluzione = nuovaSoluzione.costoSoluzione();
+        	if(costoNuovaSoluzione < costoSoluzioneCorrente) {
+        		soluzioneCorrente = nuovaSoluzione;
+        		costoSoluzioneCorrente = costoNuovaSoluzione;
+        		
+        		if(costoSoluzioneCorrente < costoSoluzioneMigliore) {
+            		costoSoluzioneMigliore = costoSoluzioneCorrente;
+            		soluzioneMigliore = soluzioneCorrente;
+        		}
+        		
+        	}
+        	//se il costo è invece maggiore, accetta la soluzione con un probabilià e ^ (costoVecchiaSol - costoNuovaSol)/temperatura)
+        	else {
+        		double probability = Math.exp((costoSoluzioneCorrente - costoNuovaSoluzione)/t);
+        		if(probability >= rand.nextDouble()) {
+        			soluzioneCorrente = nuovaSoluzione;
+            		costoSoluzioneCorrente = costoNuovaSoluzione;
+        		}
+        	}
+
+        } 
+        
+    	long tempoImpiegato = System.currentTimeMillis() - inizio;
+
+        return tempoImpiegato;
+	}
+
+	
+	
+	
+	
+	
 	public static Soluzione simulatedAnnealingTraslaz(Soluzione soluzioneCorrente, double costoSoluzioneCorrente) throws RectImpossibleException {
 		
 		//in principio la soluzione migliore è quella iniziale

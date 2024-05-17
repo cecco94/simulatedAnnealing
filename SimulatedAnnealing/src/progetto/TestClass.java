@@ -1,5 +1,7 @@
 package progetto;
 import java.awt.Dimension;
+import java.util.ArrayList;
+
 import javax.swing.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,10 +12,11 @@ import utils.JSON;
 import utils.PlanImpossibleException;
 import utils.RectImpossibleException;
 import utils.SoluzioneSemplificata;
+import utils.visualization.Grafico;
 import utils.visualization.PannelloAltezzaSoluzione;
 import utils.visualization.PannelloSfasamentoSoluzione;
-
-
+import utils.visualization.Dato;
+import utils.visualization.Dataset;
 
 
 public class TestClass {
@@ -21,7 +24,8 @@ public class TestClass {
 	public static int altezzaFinestra = 600;
 	public static int larghezzaFinestra = 600;
 
-	public static boolean newProblem = false, conTraslazione = true, saveSolution = false, istanzaSpecifica = false;
+	public static boolean newProblem = false, conTraslazione = false, saveSolution = false, istanzaSpecifica = false, 
+							grafico = true, datasetCreation = true;
 	
 	public static int macchine_tranquille = 9, macchine_urgnti = 0;
 	
@@ -39,6 +43,30 @@ public class TestClass {
 			GeneratoreIstanze.generaIstanzaSpecifica();  
 			return;
 		}
+		
+		if(grafico) {
+			Grafico g = new Grafico("grafico", "tempo su temperatura", "temperatura", "tempo", "data/grafici/2tempo_su_temperatura.json");
+			g.printPlot();
+			return;
+		}
+		
+		if(datasetCreation) {
+			System.out.println("dataset creation...");
+			Soluzione soluzioneInizialeCronometro = JSON.caricaIstanzaProblema("data/istanze/" + istanza + "_problema_con_"+macchine_tranquille+"_macchine_tranquille_"+macchine_urgnti+"_macchine_urgenti.json");
+			double costoSoluzioneInizialeCronometro = soluzioneInizialeCronometro.costoSoluzione();
+			
+			ArrayList<Dato> dati = new ArrayList<>();
+			for(int i = 1; i < 9; i++) {
+				double tempo = AlgoritmoSimulatedAnnealing.croometraSimulatedAnnealing(soluzioneInizialeCronometro, costoSoluzioneInizialeCronometro, 10*i);
+				Dato d = new Dato(tempo, Integer.toString(i*10), "tempo");
+				dati.add(d);
+			}
+			
+			Dataset dataset = new Dataset(dati);
+			JSON.salvaDatiProblema("data/grafici/", "_tempo_su_temperatura.json", dataset);
+			return;
+		}
+		
 		
 		//carica istanza del problema
 		Soluzione soluzioneIniziale = JSON.caricaIstanzaProblema("data/istanze/" + istanza + "_problema_con_"+macchine_tranquille+"_macchine_tranquille_"+macchine_urgnti+"_macchine_urgenti.json");
