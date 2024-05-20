@@ -23,7 +23,7 @@ public class GeneratoreIstanze {
 	public static double altezza_minima = 2.3;
 	
 	
-	//crea istanza casuale di un piano
+	//crea istanza casuale di un piano e la salva
 	public static void generaIstanzaProblema(int macchine_tranquille, int macchine_urgenti) throws RectImpossibleException, JsonMappingException, JsonProcessingException {
        
 		numero_richieste_urgenti = macchine_urgenti;
@@ -42,6 +42,22 @@ public class GeneratoreIstanze {
         JSON.salvaIstanzaProblema(path, filename, istanza);
         
  	}
+	
+	//crea istanza casuale di un piano senza salvarla
+	public static Soluzione generaIstanzaProblemaSenzaSalvare(int macchine_tranquille, int macchine_urgenti) throws RectImpossibleException {
+	       
+		numero_richieste_urgenti = macchine_urgenti;
+		int numero_macchine = macchine_tranquille + macchine_urgenti;
+		
+		ArrayList<Rettangolo> rect = new ArrayList<>(); 
+        for(int i = 0; i < numero_macchine; i++) {
+        	rect.add(generaRettangolo(i));     
+        }        
+        Collections.sort(rect);
+          
+        Soluzione istanza = new Soluzione(rect);
+        return istanza;
+	}
 	
 	//crea istanza casuale di una macchina
 	public static Rettangolo generaRettangolo(int id) throws RectImpossibleException {

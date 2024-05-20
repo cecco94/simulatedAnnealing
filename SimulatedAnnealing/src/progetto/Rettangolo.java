@@ -6,6 +6,8 @@ import utils.RettangoloSemplificato;
 
 public class Rettangolo implements Comparable<Rettangolo>{
 	
+	public static int passoGenerazioneRandomica = 10;
+	
 	public int identificativo;
 	
 	public int fase;
@@ -133,7 +135,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		int nuovoMargineSinistro, nuovoMargineDestro;
 		
 		//sistemiamo il margine sinistro:
-		nuovoMargineSinistro = margineSinistro + rand.nextInt(-10, 11);
+		nuovoMargineSinistro = margineSinistro + rand.nextInt(-passoGenerazioneRandomica, 1 + passoGenerazioneRandomica);
 		
 		//se il margine sisnitro è andato troppo a sinistra
 		if(nuovoMargineSinistro < margineSinistroMinimo)
@@ -172,7 +174,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		int nuovoMargineDestro = margineDestro;
 				
 		//sistemiamo il margine sinistro:
-		nuovoMargineSinistro += rand.nextInt(-15, 16);
+		nuovoMargineSinistro += rand.nextInt(-passoGenerazioneRandomica, 1 + passoGenerazioneRandomica);
 		
 		if(nuovoMargineSinistro < margineSinistroMinimo) {
 			nuovoMargineSinistro = margineSinistroMinimo;

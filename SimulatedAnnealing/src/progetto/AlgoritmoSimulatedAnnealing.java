@@ -51,13 +51,13 @@ public class AlgoritmoSimulatedAnnealing {
 	}
 
 	
-	public static double croometraSimulatedAnnealing(Soluzione soluzioneCorrente, double costoSoluzioneCorrente, double temp) throws RectImpossibleException {
-		//in principio la soluzione migliore è quella iniziale
+	//per fare misurazioni e test
+	public static double misuraSimulatedAnnealing(Soluzione soluzioneCorrente, double costoSoluzioneCorrente, double temp, double raffreddam) throws RectImpossibleException {
 		Soluzione soluzioneMigliore = soluzioneCorrente.clone();
 		double costoSoluzioneMigliore = costoSoluzioneCorrente;
 		
-        double temperaturaIniziale = temp;
-        double raffreddamneto = 0.00001;
+        double temperaturaIniziale = temp;		//100000000;
+        double raffreddamneto = raffreddam;   //0.00001;
         Random rand = new Random();
         
 		long inizio = System.currentTimeMillis();
@@ -90,16 +90,18 @@ public class AlgoritmoSimulatedAnnealing {
 
         } 
         
+    	if(TestClass.costo_su_passo || TestClass.costo_su_raffreddamento || TestClass.costo_su_temperatura) {
+            return costoSoluzioneMigliore;
+    	}
+    	
     	long tempoImpiegato = System.currentTimeMillis() - inizio;
-
-        return tempoImpiegato;
+    	return tempoImpiegato;
+        
 	}
 
 	
 	
-	
-	
-	
+	//per risolvere prima il problema di distribuire i rect
 	public static Soluzione simulatedAnnealingTraslaz(Soluzione soluzioneCorrente, double costoSoluzioneCorrente) throws RectImpossibleException {
 		
 		//in principio la soluzione migliore è quella iniziale

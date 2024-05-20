@@ -42,7 +42,10 @@ public class PannelloAltezzaSoluzione extends JPanel {
 		g2.setColor(Color.black);
 		int spessore = 5;
 		for(int x = 0; x < TestClass.larghezzaFinestra; x += 10) {
-			if(x % 60 == 0) {
+			if (x == 480){
+				spessore = 20;
+			}
+			else if(x % 60 == 0) {
 				spessore = 10;
 			}
 			else {
@@ -66,7 +69,6 @@ public class PannelloAltezzaSoluzione extends JPanel {
 	
 	private void drawRectangles(Graphics2D g2) {
     	 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
-    	 
     	 
     	 for(int i = 0; i < soluzione.rettangoli.size(); i++) {
     		 Rettangolo r = soluzione.rettangoli.get(i);
