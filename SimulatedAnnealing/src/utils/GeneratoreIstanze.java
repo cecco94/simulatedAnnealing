@@ -109,18 +109,5 @@ public class GeneratoreIstanze {
 }
 
 
-////ObjectMapper objectMapper = new ObjectMapper();
-//
-//System.out.println(s);
-//
-//Soluzione sol = JSON.stringToObj(s, Soluzione.class);
-//
-////Soluzione sol = objectMapper.readValue(s, Soluzione.class);
-//System.out.println(sol.toString());
-
-
-
-
-
 
 

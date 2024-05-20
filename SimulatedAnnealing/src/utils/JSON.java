@@ -123,8 +123,8 @@ public class JSON {
 	}
 	
 	
+	//per quando vengono creati nuovi dati, si salva come varia un valore in funzione dell'altro
 	public static void salvaDatiProblema(String path, String filename, Dataset dati) throws JsonMappingException, JsonProcessingException {
-		//salva il problema nella cartella data
 		String nomeCompleto = path+filename;
         try {
             File myObj = new File(nomeCompleto);
@@ -160,9 +160,8 @@ public class JSON {
 		
 	}
 	
-	
+	//per prendere i dati e disegnare il grafico
 	public static Dataset caricaDatiProblema(String path) throws JsonMappingException, JsonProcessingException {
-		//prende il file json e lo trasforma in una stringa
 		String line = null;
 		String data = "";
 		try {

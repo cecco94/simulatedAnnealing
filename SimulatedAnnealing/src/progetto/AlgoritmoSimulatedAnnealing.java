@@ -15,11 +15,11 @@ public class AlgoritmoSimulatedAnnealing {
         double raffreddamneto = 0.00001;
         Random rand = new Random();
         
-        long start = System.currentTimeMillis();
-        int i = 0;
+        //long start = System.currentTimeMillis();
+        //int i = 0;
         //la temperatura diminuisce in modo geometrico
         for(double t = temperaturaIniziale; t > 1; t *= (1 - raffreddamneto)){
-        	i++;
+        	//i++;
         	//genera nuova soluzione tramite piccole perturbazioni casuali della soluzione attuale
         	Soluzione nuovaSoluzione = soluzioneCorrente.generaNuovaSoluzioneCasuale();
         	
@@ -45,8 +45,8 @@ public class AlgoritmoSimulatedAnnealing {
         	}
 
         }
-        System.out.println("tempo impiegato " + (System.currentTimeMillis() - start)/1000.0 + " secondi");
-        System.out.println("iterazioni " + i);   
+        //System.out.println("tempo impiegato " + (System.currentTimeMillis() - start)/1000.0 + " secondi");
+        //System.out.println("iterazioni " + i);   
         return soluzioneMigliore;
 	}
 
@@ -56,8 +56,8 @@ public class AlgoritmoSimulatedAnnealing {
 		Soluzione soluzioneMigliore = soluzioneCorrente.clone();
 		double costoSoluzioneMigliore = costoSoluzioneCorrente;
 		
-        double temperaturaIniziale = temp;		//100000000;
-        double raffreddamneto = raffreddam;   //0.00001;
+        double temperaturaIniziale = temp;		//100 000 000;
+        double raffreddamneto = raffreddam;   //0.000 01;
         Random rand = new Random();
         
 		long inizio = System.currentTimeMillis();
@@ -77,7 +77,6 @@ public class AlgoritmoSimulatedAnnealing {
             		costoSoluzioneMigliore = costoSoluzioneCorrente;
             		soluzioneMigliore = soluzioneCorrente;
         		}
-        		
         	}
         	//se il costo è invece maggiore, accetta la soluzione con un probabilià e ^ (costoVecchiaSol - costoNuovaSol)/temperatura)
         	else {
@@ -87,7 +86,6 @@ public class AlgoritmoSimulatedAnnealing {
             		costoSoluzioneCorrente = costoNuovaSoluzione;
         		}
         	}
-
         } 
         
     	if(TestClass.costo_su_passo || TestClass.costo_su_raffreddamento || TestClass.costo_su_temperatura) {
