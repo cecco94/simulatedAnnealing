@@ -1,0 +1,6 @@
+{"richieste":[
+{"identificativoMacchina":0,"fase":2,"energia":254.7356596903113,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":55,"minutoFine":153},
+{"identificativoMacchina":1,"fase":3,"energia":200.28863051324632,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":98,"minutoFine":164},
+{"identificativoMacchina":2,"fase":1,"energia":30.219509439727013,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":0,"minutoFine":480},
+{"identificativoMacchina":3,"fase":4,"energia":177.8811416171388,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":0,"minutoFine":480}
+]}

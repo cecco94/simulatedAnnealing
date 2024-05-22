@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import progetto.Rettangolo;
 import progetto.Soluzione;
 import utils.visualization.Dataset;
 
@@ -12,6 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class JSON {
@@ -28,7 +30,7 @@ public class JSON {
 	}
 	
 	
-	public static Soluzione caricaIstanzaProblema(String path) throws JsonMappingException, JsonProcessingException {
+	public static Soluzione caricaIstanzaProblema(String path) throws JsonMappingException, JsonProcessingException, RequestImpossibleException {
 		//prende il file json e lo trasforma in una stringa
 		String line = null;
 		String data = "";
@@ -44,14 +46,31 @@ public class JSON {
 		      System.out.println("An error occurred.");
 		      e.printStackTrace();
 		    }
-				
-		Soluzione sol = stringToObj(data, Soluzione.class);
+		
+		//prende la stringa e la trasforma in una istanza
+		Istanza istanza = stringToObj(data, Istanza.class);
+		ArrayList<Rettangolo> rettangoli = new ArrayList<>();
+		
+		//per ogni richiesta dell'istanza crea un rettangolo, con dimensioni fattibili e messo in un punto casuale della nottata
+		for(int i = 0; i < istanza.richieste.size(); i++) {
+			Richiesta richiesta = istanza.richieste.get(i);
+			Rettangolo rect = new Rettangolo(richiesta.identificativoMacchina, 
+											 richiesta.fase, 
+											 richiesta.minutoInizio, 
+											 richiesta.minutoFine, 
+											 richiesta.energia, 
+											 richiesta.potenzaMassimaMacchina, 
+											 richiesta.potenzaMinimaMacchina);
+			rettangoli.add(rect);
+		}
+		
+		Soluzione sol = new Soluzione(rettangoli);
 		return sol;
 	}
 	
-
-	public static void salvaIstanzaProblema(String path, String filename, Soluzione istanza) throws JsonMappingException, JsonProcessingException {
-		//salva il problema nella cartella data
+	
+	public static void salvaIstanzaProblema(String path, String filename, Istanza istanza) throws JsonMappingException, JsonProcessingException {
+		//salva il file nella cartella data
 		String nomeCompleto = path+filename;
         try {
             File myObj = new File(nomeCompleto);
@@ -73,8 +92,10 @@ public class JSON {
             e.printStackTrace();
           }
         
+        //crea la stringa json dell'istanza
         String s = JSON.objToString(istanza);
         
+        //modifica il file scrivendoci la stringa
         try {
             FileWriter myWriter = new FileWriter(nomeCompleto);
             myWriter.write(s);
@@ -88,7 +109,7 @@ public class JSON {
 	}
 	
 	
-	public static void salvaSoluzione(String path, String filename, SoluzioneSemplificata soluzione) throws JsonMappingException, JsonProcessingException {
+	public static void salvaSoluzione(String path, String filename, Istanza soluzione) throws JsonMappingException, JsonProcessingException {
 		String nomeCompleto = path+filename;
         try {
             File myObj = new File(nomeCompleto);
@@ -159,6 +180,7 @@ public class JSON {
           }
 		
 	}
+	
 	
 	//per prendere i dati e disegnare il grafico
 	public static Dataset caricaDatiProblema(String path) throws JsonMappingException, JsonProcessingException {

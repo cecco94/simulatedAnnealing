@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 
 import lombok.Data;
 import progetto.TestClass;
-import utils.RettangoloSemplificato;
-import utils.SoluzioneSemplificata;
+import utils.Richiesta;
+import utils.Istanza;
 import progetto.Punto;
 import progetto.Rettangolo;
 import progetto.Soluzione;

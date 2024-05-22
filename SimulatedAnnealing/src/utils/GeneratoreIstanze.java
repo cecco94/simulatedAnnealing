@@ -2,7 +2,6 @@ package utils;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,43 +23,36 @@ public class GeneratoreIstanze {
 	
 	
 	//crea istanza casuale di un piano e la salva
-	public static void generaIstanzaProblema(int macchine_tranquille, int macchine_urgenti) throws RectImpossibleException, JsonMappingException, JsonProcessingException {
-       
+	public static void generaIstanzaProblema(int macchine_tranquille, int macchine_urgenti) throws RequestImpossibleException, JsonMappingException, JsonProcessingException {
 		numero_richieste_urgenti = macchine_urgenti;
 		int numero_macchine = macchine_tranquille + macchine_urgenti;
 		
-		ArrayList<Rettangolo> rect = new ArrayList<>(); 
+		ArrayList<Richiesta> rect = new ArrayList<>(); 
         for(int i = 0; i < numero_macchine; i++) {
-        	rect.add(generaRettangolo(i));     
-        }        
-        Collections.sort(rect);
-          
-        Soluzione istanza = new Soluzione(rect);
+        	rect.add(generaRichiesta(i));     
+        }
+        Istanza istanza = new Istanza(rect);
         
         String path = "data/istanze/";
         String filename = "1_problema_con_" + macchine_tranquille +"_macchine_tranquille_" + macchine_urgenti +"_macchine_urgenti.json";
         JSON.salvaIstanzaProblema(path, filename, istanza);
-        
  	}
 	
-	//crea istanza casuale di un piano senza salvarla
-	public static Soluzione generaIstanzaProblemaSenzaSalvare(int macchine_tranquille, int macchine_urgenti) throws RectImpossibleException {
-	       
+	
+	public static Istanza generaIstanzaProblemaSenzaSalvare(int macchine_tranquille, int macchine_urgenti) throws RequestImpossibleException {
 		numero_richieste_urgenti = macchine_urgenti;
 		int numero_macchine = macchine_tranquille + macchine_urgenti;
 		
-		ArrayList<Rettangolo> rect = new ArrayList<>(); 
+		ArrayList<Richiesta> rect = new ArrayList<>(); 
         for(int i = 0; i < numero_macchine; i++) {
-        	rect.add(generaRettangolo(i));     
+        	rect.add(generaRichiesta(i));     
         }        
-        Collections.sort(rect);
           
-        Soluzione istanza = new Soluzione(rect);
-        return istanza;
+        return new Istanza(rect);
 	}
 	
 	//crea istanza casuale di una macchina
-	public static Rettangolo generaRettangolo(int id) throws RectImpossibleException {
+	public static Richiesta generaRichiesta(int id){
 		Random rand = new Random();	
 		
 		int fase = 1 + rand.nextInt(4);		//fase = 4 dignifica che la macchina usa tutte e tre le fasi
@@ -82,30 +74,52 @@ public class GeneratoreIstanze {
 			int fine =  inizio + base; 
 			
 			numero_richieste_urgenti--;
-			return new Rettangolo(id, fase, inizio, fine, area, altezza_massima, altezza_minima);
+			return new Richiesta(id, fase, area, inizio, fine,  altezza_massima, altezza_minima);
 		}
 		
 		//crea richieste con tempo a disposizione = tutta la notte
-		return new Rettangolo(id, fase, inizio_nottata, fine_nottata, area, altezza_massima, altezza_minima);
+		return new Richiesta(id, fase, area, inizio_nottata, fine_nottata, altezza_massima, altezza_minima);
 	}
 	
 	
-	public static void generaIstanzaSpecifica() throws RectImpossibleException, JsonMappingException, JsonProcessingException {
+	public static void generaIstanzaSpecifica() throws RequestImpossibleException, JsonMappingException, JsonProcessingException {
 		int macchine_tranquille = 0;
 		int macchine_urgenti = 0;
+		
+		ArrayList<Richiesta> richieste = new ArrayList<>();
+		richieste.add(new Richiesta(0, 1, 250.0, 10, 110, 7.5, 2.5));
+		//aggiungi altre richieste..
+		
+		Istanza istanzaSpecifica = new Istanza(richieste);
+		
+		String path = "data/istanze/";
+		String filename = "1_problema_con_" + macchine_tranquille +"_macchine_tranquille_" + macchine_urgenti +"_macchine_urgenti.json";
+		
+		JSON.salvaIstanzaProblema(path, filename, istanzaSpecifica);
+		
+	}
+	
+	
+	
+	//crea istanza casuale di un piano senza salvarla
+	public static Soluzione generaIstanzaSpecificaProblemaSenzaSalvare() throws RequestImpossibleException {
 		ArrayList<Rettangolo> rect = new ArrayList<>();
 		rect.add(new Rettangolo(1, 1, 0, 100, 300.0, 10, 3));
-		rect.add(new Rettangolo(2, 4, 80, 180, 300.0, 10, 3));
+		rect.add(new Rettangolo(2, 4, 50, 150, 300.0, 10, 3));
+		rect.add(new Rettangolo(3, 2, 0, 300, 300.0, 10, 3));
+
+		
+//		rect.add(new Rettangolo(0, 1, 0, 100, 0, 100, 300, 10, 3, 30, 100));
+//		rect.add(new Rettangolo(1, 2, 100, 300, 100, 300, 300, 10, 3, 30, 100));
+
 //		rect.add(new Rettangolo(0, 0, 0, 0, 0, 0, 0));
 //		rect.add(new Rettangolo(0, 0, 0, 0, 0, 0, 0));
 //		rect.add(new Rettangolo(0, 0, 0, 0, 0, 0, 0));
 
-		
 		Soluzione istanzaSpecifica = new Soluzione(rect);
-		String path = "data/istanze/";
-        String filename = "1_problema_con_" + macchine_tranquille +"_macchine_tranquille_" + macchine_urgenti +"_macchine_urgenti.json";
-        JSON.salvaIstanzaProblema(path, filename, istanzaSpecifica);
+        return istanzaSpecifica;
 	}
+	
 }
 
 

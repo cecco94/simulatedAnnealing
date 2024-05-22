@@ -1,12 +1,10 @@
 package progetto;
 import java.util.Random;
-
-import utils.RectImpossibleException;
-import utils.RettangoloSemplificato;
+import utils.RequestImpossibleException;
 
 public class Rettangolo implements Comparable<Rettangolo>{
 	
-	public static int passoGenerazioneRandomica = 10;
+	public static int passoGenerazioneRandomica = 1;
 	
 	public int identificativo;
 	
@@ -37,9 +35,9 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	
 	//la prima volta che viene creato, il rettangolo ha base = base massima. Se ha più tempo a disposizione, il rettangolo avrà punto di inizio 
 	//margineSinistroMinimo e punto di fine margineSinistroMinimo + baseMassima
-	public Rettangolo(int id, int fase, int msm, int mdm, double a, double max_h, double min_h) throws RectImpossibleException {
+	public Rettangolo(int id, int fase, int msm, int mdm, double a, double max_h, double min_h) throws RequestImpossibleException {
 		if(mdm <= msm) {
-			throw new RectImpossibleException("intervallo di tempo negativo o nullo");
+			throw new RequestImpossibleException("intervallo di tempo negativo o nullo");
 		}
 		
 		identificativo = id;
@@ -60,19 +58,24 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		baseMinima = (int)(Math.ceil(area/maxAltezzaPossibile));
 		//può capitare che il tempo a disposizione sia maggiore del massimo intervallo che ci mette la macchina a caricarsi (quando abbiamo tutta la notte a disposizione)
 		//può anche capitare invece che il tempo a disposizione sia minore del massimo intervallo che ci mette la macchina a caricarsi
-		baseMassima = Math.min((int)(area/minAltezzaPossibile), mdm - msm);
+		baseMassima = Math.min((int)(area/minAltezzaPossibile), margineDestroMassimo - margineSinistroMinimo);
+		
+		//la base inizialmente è la differenza tra i due estremi più larghi, se ciò crea problemi, viene risistemato il rect
+		base = margineDestroMassimo - margineSinistroMinimo;
 		
 		//se il rect con base massima è troppo stretto, non possiamo che riportare un errore
-		base = margineDestro - margineSinistro;
 		if(base < baseMinima) {
-			throw new RectImpossibleException("troppo poco tempo per caricare il veicolo " + "area " + a + " base " + base + " altezza " + (area/base));
+			throw new RequestImpossibleException("troppo poco tempo per caricare il veicolo " + "area " + a + " base " + base + " altezza " + (area/base));
 		}
 		
 		//se il rect con base massima è troppo largo, accorciamo il margine destro fino al valore di base massimo ammissibile
 		//accade solo se diamo tutta la notte a disposizione per la ricarica
+		//in quel caso, distribuisce i rettangoli in modo casuale lungo la nottata
 		if(base > baseMassima) {
-			margineDestro = margineSinistroMinimo + baseMassima;
-			base = margineDestro - margineSinistro;
+			Random rand = new Random();
+			base = baseMassima;
+			margineSinistro = rand.nextInt(margineDestroMassimo - baseMassima);
+			margineDestro = margineSinistro + baseMassima;
 		}
 		
 		altezza = area/base;
@@ -81,10 +84,10 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	
 	
 	//rettangolo che viene creato durante il ciclo for, con la generazione casuale
-	public Rettangolo(int id, int fase, int msm, int mdm, int ms, int md, double a, double max_h, double min_h, int bmin, int bmax) throws RectImpossibleException {
+	public Rettangolo(int id, int fase, int msm, int mdm, int ms, int md, double a, double max_h, double min_h, int bmin, int bmax) throws RequestImpossibleException {
 				
 		if(md <= ms) {
-			throw new RectImpossibleException("intervallo di tempo negativo o nullo");
+			throw new RequestImpossibleException("intervallo di tempo negativo o nullo");
 		}
 		
 		identificativo = id;
@@ -103,7 +106,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		minAltezzaPossibile = min_h;
 		
 		if(margineDestro > margineDestroMassimo || margineSinistro < margineSinistroMinimo) {
-			throw new RectImpossibleException("sei andato oltre il tempo massimo/minimo " + id + ",  ms " + margineSinistro + ",  md " + margineDestro + 
+			throw new RequestImpossibleException("sei andato oltre il tempo massimo/minimo " + id + ",  ms " + margineSinistro + ",  md " + margineDestro + 
 												",  msm " + margineSinistroMinimo +  ",  mdm " + margineDestroMassimo);
 		}
 		
@@ -130,7 +133,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 
 	
 	//dato il rettangolo, dovrebbe generare un altro rettangolo ammissibile attraverso piccole perturbazioni casuali dei valori idella base
-	public Rettangolo randomGeneration(Random rand) throws RectImpossibleException {
+	public Rettangolo randomGeneration(Random rand) throws RequestImpossibleException {
 		
 		int nuovoMargineSinistro, nuovoMargineDestro;
 		
@@ -169,7 +172,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 
 	
 	//trasla il rettangolo di base massima lungo tutto il tempo a sua disposizione
-	public Rettangolo randomGenerationForTranslationProblem(Random rand) throws RectImpossibleException {
+	public Rettangolo randomGenerationForTranslationProblem(Random rand) throws RequestImpossibleException {
 		int nuovoMargineSinistro = margineSinistro;
 		int nuovoMargineDestro = margineDestro;
 				
@@ -216,7 +219,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 			nuovo_rettangolo = new Rettangolo(identificativo, fase, margineSinistroMinimo, margineDestroMassimo, margineSinistro, margineDestro, area, 
 									maxAltezzaPossibile, minAltezzaPossibile, baseMinima, baseMassima);
 		} 
-		catch (RectImpossibleException e) {
+		catch (RequestImpossibleException e) {
 			e.printStackTrace();
 		}
 		
@@ -230,9 +233,9 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	}
 	
 	
-	public RettangoloSemplificato generaRectDaMettereNelJson() {
-		return new RettangoloSemplificato(identificativo, fase, area, margineSinistro, margineDestro);
-	}
+//	public RettangoloSemplificato generaRectDaMettereNelJson() {
+//		return new RettangoloSemplificato(identificativo, fase, area, margineSinistro, margineDestro);
+//	}
 	
 }
 

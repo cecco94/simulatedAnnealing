@@ -3,9 +3,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import utils.RectImpossibleException;
-import utils.RettangoloSemplificato;
-import utils.SoluzioneSemplificata;
+import utils.RequestImpossibleException;
 import utils.ordinamento.ComparatorSfasamento;
 import utils.ordinamento.ComparatorSommaAltezze;
 import utils.ordinamento.ComparatorTempoDiInizio;
@@ -17,6 +15,9 @@ public class Soluzione {
     public ArrayList<Punto> puntiDiInizioFineRettangoli;
     public static double massimoSfasamentoConsentito = 4.2;
     public static double massimaAltezzaConsentita = 7.4;
+    //se abbiamo due soluzioni dove l'altezza massima è uguale, privilegierà quella con rettangoli più bassi e distribuiti
+    public double mediaintersezioniRettangoli = 0, mediaInnalzamentoRettangoli = 0;
+    
     
     //serve per creare il json
     public Soluzione() {  }
@@ -24,6 +25,10 @@ public class Soluzione {
     
     public Soluzione(ArrayList<Rettangolo> rettangoli) {
     	this.rettangoli = rettangoli;
+    	
+    	//ordina i rettangoli per punto di inizio
+ 	    Collections.sort(rettangoli);
+ 	   
     	puntiDiInizioFineRettangoli = new ArrayList<>();
     	
     	//sistema i punti di inizio e fine dei rettangoli
@@ -53,6 +58,8 @@ public class Soluzione {
 		   if(p.punto_di_inizio) {
 			   h += p.altezzaRettangolo;
 			   p.sommaAltezzeNelPunto = h;
+			   //se il rettangolo in questione è stato alzato, la soluzione viene penalizzata di poco
+			   mediaInnalzamentoRettangoli += (p.r.baseMassima - p.r.base);
 		   }
 		   
 		   else {
@@ -63,7 +70,8 @@ public class Soluzione {
 		   if(h > maxH)
 			   maxH = h;
 	   }
-	  	   
+	  
+	   mediaInnalzamentoRettangoli /= rettangoli.size();
 	   return maxH;
    }
    
@@ -154,7 +162,7 @@ public class Soluzione {
    }
    
    
-   public Soluzione generaNuovaSoluzioneCasuale() throws RectImpossibleException {
+   public Soluzione generaNuovaSoluzioneCasuale() throws RequestImpossibleException {
 		Random rand = new Random();
 		ArrayList<Rettangolo> new_list = new ArrayList<>();
 		
@@ -169,7 +177,7 @@ public class Soluzione {
    }
    
    
-   public Soluzione generaNuovaSoluzioneCasualeTraslazione() throws RectImpossibleException {
+   public Soluzione generaNuovaSoluzioneCasualeTraslazione() throws RequestImpossibleException {
 		Random rand = new Random();
 		ArrayList<Rettangolo> new_list = new ArrayList<>();
 		
@@ -178,7 +186,6 @@ public class Soluzione {
 		   new_list.add(new_rect);
 	   }
 	   
-	   Collections.sort(new_list);
 	   Soluzione new_solution = new Soluzione(new_list);
 	   return new_solution;
    }
@@ -199,16 +206,6 @@ public class Soluzione {
 	   for(int i = 0; i < rettangoli.size(); i++) {
 		   System.out.println(rettangoli.get(i).toString());
 	   }
-   }
-   
-   
-   public SoluzioneSemplificata creaSoluzioneDaMettereNelJson() {
-		ArrayList<RettangoloSemplificato> rettangoliSoluzione = new ArrayList<>();
-		for(int i = 0; i < rettangoli.size(); i++) {
-			Rettangolo r = rettangoli.get(i);
-			rettangoliSoluzione.add(new RettangoloSemplificato(r.identificativo, r.fase, r.area, r.margineSinistro, r.margineDestro));
-		}
-	   return new SoluzioneSemplificata(rettangoliSoluzione, sfasamento(), altezzaMassima(), costoSoluzione());
    }
    
     

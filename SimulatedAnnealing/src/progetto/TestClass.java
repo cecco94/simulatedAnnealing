@@ -1,6 +1,5 @@
 package progetto;
 import java.awt.Dimension;
-import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -10,13 +9,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import utils.GeneratoreIstanze;
 import utils.JSON;
 import utils.PlanImpossibleException;
-import utils.RectImpossibleException;
-import utils.SoluzioneSemplificata;
+import utils.RequestImpossibleException;
 import utils.visualization.Grafico;
 import utils.visualization.PannelloAltezzaSoluzione;
 import utils.visualization.PannelloSfasamentoSoluzione;
-import utils.visualization.Dato;
-import utils.visualization.Dataset;
+
 
 
 public class TestClass {
@@ -26,20 +23,20 @@ public class TestClass {
 
 	//li uso come fossero dei bottoni per attivare/disattivare le funzionalità
 	public static boolean newProblem = false, saveSolution = false, istanzaSpecifica = false, 
-							grafico = false, datasetCreation = false, conTraslazione = true;
+							grafico = false, datasetCreation = false, conTraslazione = false;
 	
 	//per decidere quali dati creare o lggere
-	public static boolean tempo_su_temperatura = false, costo_su_temperatura = false, tempo_su_raffreddamento = false, 
+	public static boolean tempo_su_temperatura = true, costo_su_temperatura = false, tempo_su_raffreddamento = false, 
 						  costo_su_raffreddamento = false, costo_su_passo = false;
 	
 	//per decidere la configurazione del problema
-	public static int macchine_tranquille = 5, macchine_urgenti = 1;
+	public static int macchine_tranquille = 2, macchine_urgenti = 3;
 	
 	//perchè possono esserci più versioni della stessa configurazione
 	public static int istanza = 1;
 	
 	
-	public static void main(String[] args) throws RectImpossibleException, JsonMappingException, JsonProcessingException, PlanImpossibleException {
+	public static void main(String[] args) throws RequestImpossibleException, JsonMappingException, JsonProcessingException, PlanImpossibleException {
 				
 		if(newProblem) {			
 			GeneratoreIstanze.generaIstanzaProblema(macchine_tranquille, macchine_urgenti);  
@@ -64,7 +61,7 @@ public class TestClass {
 		//se non sono state richieste funzionalità particolari, risolve semplicemente il problema
 		//carica istanza del problema
 		Soluzione soluzioneIniziale = JSON.caricaIstanzaProblema("data/istanze/" + istanza + "_problema_con_"+macchine_tranquille+
-																"_macchine_tranquille_"+macchine_urgenti+"_macchine_urgenti.json");
+																 "_macchine_tranquille_"+macchine_urgenti+"_macchine_urgenti.json");
 		double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();
         visualizzaDatiIniziali(soluzioneIniziale, costoSoluzioneIniziale);                           
         
@@ -96,102 +93,34 @@ public class TestClass {
 	
 	////////////////////////// METODI AUSILIARI ///////////////////////////
 	
-	private static void creaNuoviDati() throws JsonMappingException, JsonProcessingException, RectImpossibleException {
-		//genera casualmente 10 istanze del problema con stesso numero di macchine e le risolve, poi fa la media del tempo/costo
-		System.out.println("dataset creation...");
+	private static void creaNuoviDati() throws JsonMappingException, JsonProcessingException, RequestImpossibleException {
+		Soluzione soluzioneIniziale = JSON.caricaIstanzaProblema("data/istanze/" + istanza + "_problema_con_"+macchine_tranquille+
+				 													"_macchine_tranquille_"+macchine_urgenti+"_macchine_urgenti.json");
 		
-		Soluzione istanzaCasuale; 
-		double costoIstanzaCasuale; 
-		ArrayList<Dato> dati = new ArrayList<>();
-			
-		if(tempo_su_temperatura) {
-			//crea 10 istanze del problema e le risolve con temperatura crescente
-			double[][] tempiImpiegati = new double[10][5];
-			for(int istanza = 0; istanza < 10; istanza++) {
-				istanzaCasuale = GeneratoreIstanze.generaIstanzaProblemaSenzaSalvare(macchine_tranquille, macchine_urgenti);
-				costoIstanzaCasuale = istanzaCasuale.costoSoluzione();
-				
-				//la stessa istanza la risolve 4 volte, aumentando sempre la temperatura
-				int iterazione = 0;
-				for(int temp = 1000; temp <= 100*1000*1000; temp*=10) {
-					tempiImpiegati[istanza][iterazione] = AlgoritmoSimulatedAnnealing.misuraSimulatedAnnealing(istanzaCasuale, 
-																							costoIstanzaCasuale, temp, 0.00001);
-					iterazione++;
-				}
-				System.out.println("problema " + istanza + " creato");
-			}
-			//ora fa la media dei valori sulle colonne, che sarebbero i tempi di diversi problemi ma alla stessa temperatura
-			int temperatura = 10000;
-			for(int iterazione = 0; iterazione < 4; iterazione++) {
-				double tempoMedioConQuellaTemperatura = 0;
-
-				for(int istanza = 0; istanza < 10; istanza++) {
-					tempoMedioConQuellaTemperatura += tempiImpiegati[istanza][iterazione];
-				}
-				tempoMedioConQuellaTemperatura /= 10;
-				
-				Dato d = new Dato(tempoMedioConQuellaTemperatura, Integer.toString(temperatura/1000), "tempo");
-				dati.add(d);
-				
-				System.out.println("dati per temperatuta = " + temperatura + " completati");
-				temperatura *= 10;
-			}
-			Dataset dataset = new Dataset(dati);
-			JSON.salvaDatiProblema("data/grafici/", "_tempo_su_temperatura_" + macchine_tranquille +"_" + macchine_urgenti +".json", dataset);
-		}
-		
-		
-		else if (costo_su_temperatura) {
-			//crea 10 istanze del problema e le risolve con temperatura crescente			
-			double[] costi = new double[6];
-			
-			for(int istanza = 0; istanza < 10; istanza++) {
-				istanzaCasuale = GeneratoreIstanze.generaIstanzaProblemaSenzaSalvare(macchine_tranquille, macchine_urgenti);
-				costoIstanzaCasuale = istanzaCasuale.costoSoluzione();
-				double temperatura = 1000;
-				for(int iterazione = 0; iterazione < 6; iterazione++) {
-					double costo = AlgoritmoSimulatedAnnealing.misuraSimulatedAnnealing(istanzaCasuale, costoIstanzaCasuale, temperatura,  0.00001);
-					costi[iterazione] += costo/10; 
-					System.out.println(costo + ", " + temperatura);
-					temperatura *= 10;
-				}
-				System.out.println("istanza " +  istanza + " ultimata");
-			}
-			int temperatura = 1000;
-			for(int iterazione = 0; iterazione < 6; iterazione++) {
-				Dato d = new Dato(costi[iterazione], Integer.toString(temperatura/1000), "costo");
-				dati.add(d);
-				temperatura *= 10;
-			}
-			Dataset dataset = new Dataset(dati);
-			JSON.salvaDatiProblema("data/grafici/", "_costo_su_temperatura_" + macchine_tranquille +"_" + macchine_urgenti +".json", dataset);
-		}
-
-		else if(costo_su_passo) {
-			//crea 10 istanze del problema e le risolve con temperatura crescente			
-			double[] costi = new double[10];
-			
-			for(int istanza = 0; istanza < 10; istanza++) {
-				istanzaCasuale = GeneratoreIstanze.generaIstanzaProblemaSenzaSalvare(macchine_tranquille, macchine_urgenti);
-				costoIstanzaCasuale = istanzaCasuale.costoSoluzione();
-				int passo = 1;
-				for(int iterazione = 0; iterazione < 10; iterazione++) {
-					double costo = AlgoritmoSimulatedAnnealing.misuraSimulatedAnnealing(istanzaCasuale, costoIstanzaCasuale, 100000000,  0.00001);
-					costi[iterazione] += costo/10; 
-					System.out.println(costo + ", passo " + passo);
-					passo++;
-				}
-				System.out.println("istanza " +  istanza + " ultimata");
-			}
-			int passo = 1;
-			for(int iterazione = 0; iterazione < 10; iterazione++) {
-				Dato d = new Dato(costi[iterazione], Integer.toString(passo+1), "costo");
-				dati.add(d);
-				passo++;
-			}
-			Dataset dataset = new Dataset(dati);
-			JSON.salvaDatiProblema("data/grafici/", "_costo_su_passo_" + macchine_tranquille +"_" + macchine_urgenti + ".json", dataset);
-		}
+		double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();
+        visualizzaDatiIniziali(soluzioneIniziale, costoSoluzioneIniziale);                           
+        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+        
+        
+        long inizio = System.currentTimeMillis();
+        Soluzione soluz1 = AlgoritmoSimulatedAnnealing.simulatedAnnealing(soluzioneIniziale, costoSoluzioneIniziale);
+        System.out.println("tempo impiegato nuovo " + (System.currentTimeMillis() - inizio));
+        
+        //soluz1.printSoluzione();
+        visualizzaAltezzaSoluzione(soluz1, "nuovo");
+        visualizzaSfasamentoSoluzione(soluz1, "nuovo");
+        System.out.println("costo nuovo " + soluz1.costoSoluzione());
+        System.out.println("////////////////////////");
+        
+        inizio = System.currentTimeMillis();
+        Soluzione soluz2 = AlgoritmoSimulatedAnnealing.simulatedAnnealing2(soluzioneIniziale, costoSoluzioneIniziale);
+        System.out.println("tempo impiegato vecchio " + (System.currentTimeMillis() - inizio));
+        
+        //soluz2.printSoluzione();
+        System.out.println("costo vecchio " + soluz2.costoSoluzione());
+        visualizzaAltezzaSoluzione(soluz2, "vecchio");
+        visualizzaSfasamentoSoluzione(soluz2, "vecchio");
+        
 	}
 
 
@@ -236,8 +165,8 @@ public class TestClass {
         }  
         
         if(saveSolution) {
-        	SoluzioneSemplificata sol = migliore_soluzione.creaSoluzioneDaMettereNelJson();
-        	JSON.salvaSoluzione("data/soluzioni/", "problema_con_" + macchine_tranquille +"_macchine_tranquille_" + macchine_urgenti + "_macchine_urgenti.json", sol);
+//        	SoluzioneSemplificata sol = migliore_soluzione.creaSoluzioneDaMettereNelJson();
+//        	JSON.salvaSoluzione("data/soluzioni/", "problema_con_" + macchine_tranquille +"_macchine_tranquille_" + macchine_urgenti + "_macchine_urgenti.json", sol);
         }
 	}
 	
@@ -302,15 +231,15 @@ public class TestClass {
 
 
 
-//grafici da fare: 
-//tempo di esecuzione in funzione del raffreddamento (è lineare?)
-//costo in funzione del raffreddamento	(da vedere col prof, non migliora all'aumentare della temperatura...)
-//costo in funzione del passo nella generazione di nuove soluzioni (non sembra esserci una correlazione!)
-//costo se prima facciamo la traslazione (migliora di molto)
-//tempo in funzione del num di macchine
+//criterio secondario per la scelta dove si privilegiano le soluzioni con rect di base più larga/meno sovrapposti (larghezza fatta)
 
+//aggiustare i parametri di temperatura, raffreddamento, passo  (vedi qaunte iterazioni fa senza cambiare)	(cambiata implementazione)
 
+//distribuire i rect nel tempo	(anche facendolo in modo casuale miglioriamo molto le prestazioni, se in più facciamo un piccolo preprocessing dove
+//								trasliamo i rect, raggiungiamo veramente un risultato vicino all'ottimo)
 
-
+//usa excell per i grafici
+//crea tot soluzioni casuali e usa la migliore come punto di partenza	(tanto vale usare il SA per traslarli, no?)
+//controllare cosa fa ogni tot (ogni volta che cambia) 
 
 
