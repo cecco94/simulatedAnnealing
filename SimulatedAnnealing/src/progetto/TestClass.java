@@ -23,14 +23,14 @@ public class TestClass {
 
 	//li uso come fossero dei bottoni per attivare/disattivare le funzionalità
 	public static boolean newProblem = false, saveSolution = false, istanzaSpecifica = false, 
-							grafico = false, datasetCreation = false, conTraslazione = false;
+							grafico = false, datasetCreation = false, conTraslazione = true;
 	
 	//per decidere quali dati creare o lggere
 	public static boolean tempo_su_temperatura = true, costo_su_temperatura = false, tempo_su_raffreddamento = false, 
 						  costo_su_raffreddamento = false, costo_su_passo = false;
 	
 	//per decidere la configurazione del problema
-	public static int macchine_tranquille = 2, macchine_urgenti = 3;
+	public static int macchine_tranquille = 10, macchine_urgenti = 2;
 	
 	//perchè possono esserci più versioni della stessa configurazione
 	public static int istanza = 1;
@@ -63,25 +63,27 @@ public class TestClass {
 		Soluzione soluzioneIniziale = JSON.caricaIstanzaProblema("data/istanze/" + istanza + "_problema_con_"+macchine_tranquille+
 																 "_macchine_tranquille_"+macchine_urgenti+"_macchine_urgenti.json");
 		double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();
-        visualizzaDatiIniziali(soluzioneIniziale, costoSoluzioneIniziale);                           
+        visualizzaDatiIniziali(soluzioneIniziale, costoSoluzioneIniziale); 
         
         Soluzione migliore_soluzione;
         double costo_migliore_soluzione;
         
         //per fare dei test, la soluzione sembra migliorare se prima distribuisco i rect nel tempo
         if(conTraslazione) {
-        	migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealingTraslaz(soluzioneIniziale, costoSoluzioneIniziale);
+        	//migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealingTraslaz(soluzioneIniziale, costoSoluzioneIniziale);
+ 
+        	migliore_soluzione = AlgoritmoSimulatedAnnealing.preProcessing(soluzioneIniziale.clone());
             costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
             
             visualizzaDatiIntermedi(migliore_soluzione, costo_migliore_soluzione);
             
-            migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealing(migliore_soluzione, costo_migliore_soluzione);
+            migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealing(migliore_soluzione);
             costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
         }
         
         //algoritmo normale
         else {
-        	migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealing(soluzioneIniziale, costoSoluzioneIniziale);
+        	migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealing(soluzioneIniziale);
             costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
         }
         
@@ -103,7 +105,7 @@ public class TestClass {
         
         
         long inizio = System.currentTimeMillis();
-        Soluzione soluz1 = AlgoritmoSimulatedAnnealing.simulatedAnnealing(soluzioneIniziale, costoSoluzioneIniziale);
+        Soluzione soluz1 = AlgoritmoSimulatedAnnealing.simulatedAnnealing(soluzioneIniziale);
         System.out.println("tempo impiegato nuovo " + (System.currentTimeMillis() - inizio));
         
         //soluz1.printSoluzione();
@@ -175,6 +177,7 @@ public class TestClass {
 		visualizzaAltezzaSoluzione(migliore_soluzione, "ALTEZZE DOPO TRASLAZIONE");
         visualizzaSfasamentoSoluzione(migliore_soluzione, "SFASAMENTO DOPO TRASLAZIONE");
         migliore_soluzione.printSoluzione();
+        System.out.println("media restringimento basi " + migliore_soluzione.mediaInnalzamentoRettangoli);
         System.out.println("costo dopo traslaz " + costo_migliore_soluzione);
         System.out.println("altezza max dopo traslaz " + migliore_soluzione.altezzaMassima());
         System.out.println("sfasamento max dopo traslaz " + migliore_soluzione.sfasamento());
@@ -186,6 +189,7 @@ public class TestClass {
 		visualizzaAltezzaSoluzione(migliore_soluzione, "ALTEZZE FINALI");
         visualizzaSfasamentoSoluzione(migliore_soluzione, "SFASAMENTO FINALE");
         migliore_soluzione.printSoluzione();
+        System.out.println("media restringimento basi " + migliore_soluzione.mediaInnalzamentoRettangoli);
         System.out.println("costo finale " + costo_migliore_soluzione);
         System.out.println("altezza max finale " + migliore_soluzione.altezzaMassima());
         System.out.println("sfasamento max finale " + migliore_soluzione.sfasamento());
@@ -197,6 +201,7 @@ public class TestClass {
 		visualizzaAltezzaSoluzione(soluzioneIniziale, "ALTEZZE PRIMA");
         visualizzaSfasamentoSoluzione(soluzioneIniziale, "SFASAMENTO PRIMA");
         soluzioneIniziale.printSoluzione();
+        System.out.println("media restringimento basi " + soluzioneIniziale.mediaInnalzamentoRettangoli);
         System.out.println("costo iniziale " + costoSoluzioneIniziale);
         System.out.println("altezza max iniziale " + soluzioneIniziale.altezzaMassima());
         System.out.println("sfasamento max iniziale " + soluzioneIniziale.sfasamento());
@@ -228,18 +233,17 @@ public class TestClass {
 	
 }
 
+//distribuire i rect nel tempo (prima dell'algoritmo viene fatto un preprocessing dove i rect vengono distribuiti in modo uniforme nel tempo)
+//per fare ciò, prima si mettono i rect uno dopo l'altro (separati oppure no), poi si fa un mini annealing che cerca di separarli meglio
+//il prof vuole un algo che crea tot soluzioni casuali e usa la migliore come punto di partenza	(tanto vale usare il SA per traslarli, no?)
 
-
-
-//criterio secondario per la scelta dove si privilegiano le soluzioni con rect di base più larga/meno sovrapposti (larghezza fatta)
+//implementato un criterio secondario per la scelta dove si privilegiano le soluzioni con rect di base più larga/meno sovrapposti (larghezza fatta, manca l'intersezione)
 
 //aggiustare i parametri di temperatura, raffreddamento, passo  (vedi qaunte iterazioni fa senza cambiare)	(cambiata implementazione)
 
-//distribuire i rect nel tempo	(anche facendolo in modo casuale miglioriamo molto le prestazioni, se in più facciamo un piccolo preprocessing dove
-//								trasliamo i rect, raggiungiamo veramente un risultato vicino all'ottimo)
-
 //usa excell per i grafici
-//crea tot soluzioni casuali e usa la migliore come punto di partenza	(tanto vale usare il SA per traslarli, no?)
 //controllare cosa fa ogni tot (ogni volta che cambia) 
+
+
 
 

@@ -4,7 +4,9 @@ import utils.RequestImpossibleException;
 
 public class Rettangolo implements Comparable<Rettangolo>{
 	
-	public static int passoGenerazioneRandomica = 1;
+	public static int passoGenerazioneRandomica = 10;
+	public static int passoGenerazioneRandomicaTraslaz = 25;
+
 	
 	public int identificativo;
 	
@@ -72,9 +74,10 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		//accade solo se diamo tutta la notte a disposizione per la ricarica
 		//in quel caso, distribuisce i rettangoli in modo casuale lungo la nottata
 		if(base > baseMassima) {
-			Random rand = new Random();
+			//Random rand = new Random();
 			base = baseMassima;
-			margineSinistro = rand.nextInt(margineDestroMassimo - baseMassima);
+			//margineSinistro = rand.nextInt(margineDestroMassimo - baseMassima);
+			margineSinistro = margineSinistroMinimo;
 			margineDestro = margineSinistro + baseMassima;
 		}
 		
@@ -177,7 +180,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		int nuovoMargineDestro = margineDestro;
 				
 		//sistemiamo il margine sinistro:
-		nuovoMargineSinistro += rand.nextInt(-passoGenerazioneRandomica, 1 + passoGenerazioneRandomica);
+		nuovoMargineSinistro += rand.nextInt(-passoGenerazioneRandomicaTraslaz, 1 + passoGenerazioneRandomicaTraslaz);
 		
 		if(nuovoMargineSinistro < margineSinistroMinimo) {
 			nuovoMargineSinistro = margineSinistroMinimo;
@@ -207,14 +210,19 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		if(margineSinistro > r.margineSinistro)
 			return 1;
 		
+		//se hanno entrambi lo stesso punto di partenza, privilegia quelli che hanno meno tempo a disposizione
+		if(margineSinistro == r.margineSinistro) {
+			if(margineDestroMassimo < r.margineDestroMassimo) {
+				return -1;
+			}
+		}
+		
 		return 0;
 	}
 	
 	
 	public Rettangolo clone() {
-
 		Rettangolo nuovo_rettangolo = null;
-		
 		try {
 			nuovo_rettangolo = new Rettangolo(identificativo, fase, margineSinistroMinimo, margineDestroMassimo, margineSinistro, margineDestro, area, 
 									maxAltezzaPossibile, minAltezzaPossibile, baseMinima, baseMassima);
