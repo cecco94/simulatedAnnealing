@@ -43,7 +43,7 @@ public class AlgoritmoSimulatedAnnealing {
 			}
 			
 			Soluzione soluzConRettangoliDistribuiti = new Soluzione(soluzioneIniziale.rettangoli);
-			return preProcessAnnealing2(soluzConRettangoliDistribuiti);
+			return  soluzConRettangoliDistribuiti;	//preProcessAnnealing2(soluzConRettangoliDistribuiti);
 		}
 	
 		//altrimenti li metto uno dopo l'altro e quando arrivo a fine nottata riparto da capo (oppure li inizio a mettere a caso)
@@ -65,44 +65,88 @@ public class AlgoritmoSimulatedAnnealing {
 		}
 		
 		Soluzione soluzConRettangoliDistribuiti = new Soluzione(soluzioneIniziale.rettangoli);
-		return preProcessAnnealing2(soluzConRettangoliDistribuiti);
+		return 	soluzConRettangoliDistribuiti;	//preProcessAnnealing2(soluzConRettangoliDistribuiti);
 		
 	}
 	
 	
+	public static Soluzione preProcessing2(Soluzione soluzioneIniziale) throws RequestImpossibleException {
+		Soluzione distribuzioneMigliore = soluzioneIniziale;
+		double costoDistribuzioneMigliore = soluzioneIniziale.costoSoluzione();
+		
+		//crea 10 situazioni iniziali a caso (sposta i rettangoli che hanno più tempo del necessario) e prende quella migliore
+		for(int iteraz = 1; iteraz < 10; iteraz++) {
+			Soluzione soluzConRettangoliDistribuiti = soluzioneIniziale.generaNuovaSituazioneDiPartenza();
+			double costoSoluzConRettangoliDistribuiti = soluzConRettangoliDistribuiti.costoSoluzione();
+			
+			if(costoDistribuzioneMigliore > costoSoluzConRettangoliDistribuiti) {
+				distribuzioneMigliore = soluzConRettangoliDistribuiti;
+				costoDistribuzioneMigliore = costoSoluzConRettangoliDistribuiti;
+			}
+			//se hanno lo stesso costo, predilige le soluzioni con meno intersezioni
+			else if(costoDistribuzioneMigliore == costoSoluzConRettangoliDistribuiti) {
+				if(distribuzioneMigliore.contaIntersezioni() > soluzConRettangoliDistribuiti.contaIntersezioni()) {
+					distribuzioneMigliore = soluzConRettangoliDistribuiti;
+					costoDistribuzioneMigliore = costoSoluzConRettangoliDistribuiti;
+				}
+			}
+		}
+		
+		//fatto ciò, uso la distribuzione migliore come punto di partenza per l'annealing
+		return preProcessAnnealing(distribuzioneMigliore);
+	}
+	
+	
 	public static Soluzione simulatedAnnealing(Soluzione soluzioneCorrente) throws RequestImpossibleException {
+		//se il preprocessing ha portato ad una situazione senza intersezioni con rettangoli di base massima
+		if(soluzioneCorrente.contaIntersezioni() == 0) {
+			return soluzioneCorrente;
+		}
+		
 		double costoSoluzioneCorrente = soluzioneCorrente.costoSoluzione();
-
 		//in principio la soluzione migliore è quella iniziale
 		Soluzione soluzioneMigliore = soluzioneCorrente.clone();
 		double costoSoluzioneMigliore = costoSoluzioneCorrente;
 		
         double temperaturaIniziale = 1, temperaturaFinale = 0.0001, temperatura = temperaturaIniziale;
         double raffreddamneto = 0.99;
-        Random rand = new Random();
-        
+        Random rand = new Random();   
+		int i = 0;
+     
         while(temperatura > temperaturaFinale) {
         	for(int iterazione = 0; iterazione < 1000; iterazione++) {
 
+        		i++;
+        		
         		//genera nuova soluzione tramite piccole perturbazioni casuali della soluzione attuale
         		Soluzione nuovaSoluzione = soluzioneCorrente.generaNuovaSoluzioneCasuale();
 
-        		//se il costo della nuova soluzione è < costo vecchia soluzione, accetta la nuova soluzione e aggiorna la soluzione migliore, se serve
+        		//se il costo della nuova soluzione è < costo vecchia soluzione, accetta la nuova soluzione
         		double costoNuovaSoluzione = nuovaSoluzione.costoSoluzione();
         		if(costoNuovaSoluzione < costoSoluzioneCorrente) {
         			soluzioneCorrente = nuovaSoluzione;
         			costoSoluzioneCorrente = costoNuovaSoluzione;
         			
-        			//aggiorna il valore della soluzione migliore
+        			//aggiorna il valore della soluzione migliore, se serve
             		if(costoSoluzioneCorrente < costoSoluzioneMigliore) {
             			costoSoluzioneMigliore = costoSoluzioneCorrente;
             			soluzioneMigliore = soluzioneCorrente;
+            			System.out.println("cambio a iteraz " + i);
             		}
         		}
-        		//se hanno la stessa altezza massima, la soluzione migliore è quella con i rettangoli mediamente più larghi
+        		//se hanno la stessa altezza massima, la soluzione migliore è quella con i rettangoli mediamente più larghi e con meno intersezioni
         		else if(costoNuovaSoluzione == costoSoluzioneCorrente) {
-        			if(nuovaSoluzione.mediaInnalzamentoRettangoli < soluzioneCorrente.mediaInnalzamentoRettangoli) {
+        			if(nuovaSoluzione.mediaInnalzamentoRettangoli + nuovaSoluzione.contaIntersezioni() < 
+        			soluzioneCorrente.mediaInnalzamentoRettangoli + soluzioneCorrente.contaIntersezioni()) {
         				soluzioneCorrente = nuovaSoluzione;
+        			}
+        			//accetta comunque una soluzione con rect meno larghi, almeno all'inizio
+        			else {
+        				double probability = Math.exp( ((costoSoluzioneCorrente - costoNuovaSoluzione)/temperatura) );
+            			if(probability >= rand.nextDouble()) {
+            				soluzioneCorrente = nuovaSoluzione;
+            				costoSoluzioneCorrente = costoNuovaSoluzione;
+            			}
         			}
         		}
             	
@@ -119,47 +163,49 @@ public class AlgoritmoSimulatedAnnealing {
         	temperatura *= raffreddamneto;
         }
         
+        System.out.println("iterazioni " + i);
         return soluzioneMigliore;
 	}
 	
 	
-	public static Soluzione simulatedAnnealing2(Soluzione soluzioneCorrente, double costoSoluzioneCorrente) throws RequestImpossibleException {
+	public static Soluzione simulatedAnnealing2(Soluzione soluzioneCorrente) throws RequestImpossibleException {
+		double costoSoluzioneCorrente = soluzioneCorrente.costoSoluzione();
 		
 		//in principio la soluzione migliore è quella iniziale
-			Soluzione soluzioneMigliore = soluzioneCorrente.clone();
-			double costoSoluzioneMigliore = costoSoluzioneCorrente;
-			
-	        double temperaturaIniziale = 1000000;
-	        double raffreddamneto = 0.00001;
-	        Random rand = new Random();
-	        
-	        for(double t = temperaturaIniziale; t > 1; t *= (1 - raffreddamneto)){
-	        	//genera nuova soluzione tramite piccole perturbazioni casuali della soluzione attuale
-	        	Soluzione nuovaSoluzione = soluzioneCorrente.generaNuovaSoluzioneCasuale();
-	        	
-	        	//se il costo della nuova soluzione è < costo vecchia soluzione, accetta la nuova soluzione e aggiorna la soluzione migliore, se serve
-	        	double costoNuovaSoluzione = nuovaSoluzione.costoSoluzione();
-	        	if(costoNuovaSoluzione < costoSoluzioneCorrente) {
-	        		soluzioneCorrente = nuovaSoluzione;
-	        		costoSoluzioneCorrente = costoNuovaSoluzione;
-	        		
-	        		if(costoSoluzioneCorrente < costoSoluzioneMigliore) {
-	            		costoSoluzioneMigliore = costoSoluzioneCorrente;
-	            		soluzioneMigliore = soluzioneCorrente;
-	        		}
-	        		
-	        	}
-	        	//se il costo è invece maggiore, accetta la soluzione con un probabilià e ^ (costoVecchiaSol - costoNuovaSol)/temperatura)
-	        	else {
-	        		double probability = Math.exp((costoSoluzioneCorrente - costoNuovaSoluzione)/t);
-	        		if(probability >= rand.nextDouble()) {
-	        			soluzioneCorrente = nuovaSoluzione;
-	            		costoSoluzioneCorrente = costoNuovaSoluzione;
-	        		}
-	        	}
+		Soluzione soluzioneMigliore = soluzioneCorrente.clone();
+		double costoSoluzioneMigliore = costoSoluzioneCorrente;
+		
+        double temperaturaIniziale = 1000000;
+        double raffreddamneto = 0.00001;
+        Random rand = new Random();
+        
+        for(double t = temperaturaIniziale; t > 1; t *= (1 - raffreddamneto)){
+        	//genera nuova soluzione tramite piccole perturbazioni casuali della soluzione attuale
+        	Soluzione nuovaSoluzione = soluzioneCorrente.generaNuovaSoluzioneCasuale();
+        	
+        	//se il costo della nuova soluzione è < costo vecchia soluzione, accetta la nuova soluzione e aggiorna la soluzione migliore, se serve
+        	double costoNuovaSoluzione = nuovaSoluzione.costoSoluzione();
+        	if(costoNuovaSoluzione < costoSoluzioneCorrente) {
+        		soluzioneCorrente = nuovaSoluzione;
+        		costoSoluzioneCorrente = costoNuovaSoluzione;
+        		
+        		if(costoSoluzioneCorrente < costoSoluzioneMigliore) {
+            		costoSoluzioneMigliore = costoSoluzioneCorrente;
+            		soluzioneMigliore = soluzioneCorrente;
+        		}
+        		
+        	}
+        	//se il costo è invece maggiore, accetta la soluzione con un probabilià e ^ (costoVecchiaSol - costoNuovaSol)/temperatura)
+        	else {
+        		double probability = Math.exp((costoSoluzioneCorrente - costoNuovaSoluzione)/t);
+        		if(probability >= rand.nextDouble()) {
+        			soluzioneCorrente = nuovaSoluzione;
+            		costoSoluzioneCorrente = costoNuovaSoluzione;
+        		}
+        	}
 
-	        }   
-	        return soluzioneMigliore;
+        }   
+        return soluzioneMigliore;
 	}
 	
 	
@@ -273,12 +319,10 @@ public class AlgoritmoSimulatedAnnealing {
 		double costoSoluzioneMigliore = costoSoluzioneCorrente;
 		
         double temperaturaIniziale = 1, temperaturaFinale = 0.0001, temperatura = temperaturaIniziale;
-        double raffreddamneto = 0.99;
+        double raffreddamneto = 0.90;
         Random rand = new Random();
-        
         while(temperatura > temperaturaFinale) {
-        	for(int iterazione = 0; iterazione < 1000; iterazione++) {
-
+        	for(int iterazione = 0; iterazione < 800; iterazione++) {
         		//genera nuova soluzione tramite piccole perturbazioni casuali della soluzione attuale
         		Soluzione nuovaSoluzione = soluzioneCorrente.generaNuovaSoluzioneCasualeTraslazione();
 

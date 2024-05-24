@@ -58,6 +58,7 @@ public class Soluzione {
 		   if(p.punto_di_inizio) {
 			   h += p.altezzaRettangolo;
 			   p.sommaAltezzeNelPunto = h;
+			   
 			   //se il rettangolo in questione è stato alzato, la soluzione viene penalizzata di poco
 			   mediaInnalzamentoRettangoli += (p.r.baseMassima - p.r.base);
 		   }
@@ -96,7 +97,7 @@ public class Soluzione {
 			   else if(p.r.fase == 3) {
 				   h_fase_3 += p.altezzaRettangolo;
 			   }
-			   else if(p.r.fase == 4) {
+			   else if(p.r.fase == 0) {
 				   h_fase_1 += p.altezzaRettangolo/3;
 				   h_fase_2 += p.altezzaRettangolo/3;
 				   h_fase_3 += p.altezzaRettangolo/3;
@@ -112,6 +113,11 @@ public class Soluzione {
 			   }
 			   else if(p.r.fase == 3) {
 				   h_fase_3 -= p.altezzaRettangolo;
+			   }
+			   else if(p.r.fase == 0) {
+				   h_fase_1 -= p.altezzaRettangolo/3;
+				   h_fase_2 -= p.altezzaRettangolo/3;
+				   h_fase_3 -= p.altezzaRettangolo/3;
 			   }
 		   }
 		   
@@ -133,6 +139,29 @@ public class Soluzione {
 	   }
 		   
 	   return sfasamento_massimo;
+   }
+   
+   
+   public int contaIntersezioni() {
+	   int intersezioni = 0;
+	   //prende tutti i punti di inizio
+	   for(int i = 0; i < puntiDiInizioFineRettangoli.size(); i++) {
+		   Punto p = puntiDiInizioFineRettangoli.get(i);
+		   if(p.punto_di_inizio) {
+			  int md = p.r.margineDestro;
+			  //prende tutti i punti di inizio successivi fino alla fine del rettangolo
+			  for(int j = i+1; j < puntiDiInizioFineRettangoli.size(); j++) {
+				  Punto p2 = puntiDiInizioFineRettangoli.get(j);
+				  if(p2.x > md) 
+					  break;
+				  //ogni volta che ne trova uno, aumenta le intersezioni
+				  if(p2.punto_di_inizio) 
+					  intersezioni++;
+			  }
+		   }
+		   
+	   }
+	   return intersezioni;
    }
    
    
@@ -162,6 +191,7 @@ public class Soluzione {
    }
    
    
+   //serve per l'algoritmo, crea una nuova soluzione sposyando a caso gli estremi dei rettangoli
    public Soluzione generaNuovaSoluzioneCasuale() throws RequestImpossibleException {
 		Random rand = new Random();
 		ArrayList<Rettangolo> new_list = new ArrayList<>();
@@ -177,6 +207,7 @@ public class Soluzione {
    }
    
    
+   //serve per il preprocessing: crea una nuova soluzione traslando a caso alcuni rettangoli
    public Soluzione generaNuovaSoluzioneCasualeTraslazione() throws RequestImpossibleException {
 		Random rand = new Random();
 		ArrayList<Rettangolo> new_list = new ArrayList<>();
@@ -191,6 +222,21 @@ public class Soluzione {
    }
         
    
+   //serve per il preprocessing: crea una nuova configurazione iniziale mettendo i rect a caso nel tempo
+   public Soluzione generaNuovaSituazioneDiPartenza() throws RequestImpossibleException {
+		Random rand = new Random();
+		ArrayList<Rettangolo> new_list = new ArrayList<>();
+		
+	   for(int i = 0; i < rettangoli.size(); i++) {
+		   Rettangolo new_rect = rettangoli.get(i).generaNuovoRectDiBaseMassima(rand);
+		   new_list.add(new_rect);
+	   }
+	   
+	   Soluzione new_solution = new Soluzione(new_list);
+	   return new_solution;
+	}
+   
+	
    public Soluzione clone() {
 	   ArrayList<Rettangolo> new_list = new ArrayList<>();
 	   for(int i = 0; i < rettangoli.size(); i++) {
@@ -207,6 +253,7 @@ public class Soluzione {
 		   System.out.println(rettangoli.get(i).toString());
 	   }
    }
+
    
     
 }

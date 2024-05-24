@@ -99,7 +99,7 @@ public class PannelloSfasamentoSoluzione extends JPanel{
     		 else if((r.fase) == 3) {
     			 g2.setColor(Color.orange);
     		 }
-    		 else if((r.fase) == 4) {
+    		 else if((r.fase) == 0) {
     			 g2.setColor(Color.magenta);
     		 }
     		 

@@ -55,7 +55,7 @@ public class GeneratoreIstanze {
 	public static Richiesta generaRichiesta(int id){
 		Random rand = new Random();	
 		
-		int fase = 1 + rand.nextInt(4);		//fase = 4 dignifica che la macchina usa tutte e tre le fasi
+		int fase = rand.nextInt(4);		//fase = 0 dignifica che la macchina usa tutte e tre le fasi
 		
 		double area = 30.0 + rand.nextDouble(250.0); //quanti kwh può accumulare in media un'auto
 
@@ -104,10 +104,13 @@ public class GeneratoreIstanze {
 	//crea istanza casuale di un piano senza salvarla
 	public static Soluzione generaIstanzaSpecificaProblemaSenzaSalvare() throws RequestImpossibleException {
 		ArrayList<Rettangolo> rect = new ArrayList<>();
-		rect.add(new Rettangolo(1, 1, 0, 100, 300.0, 10, 3));
-		rect.add(new Rettangolo(2, 4, 50, 150, 300.0, 10, 3));
-		rect.add(new Rettangolo(3, 2, 0, 300, 300.0, 10, 3));
+//		rect.add(new Rettangolo(1, 1, 0, 100, 300.0, 10, 3));
+//		rect.add(new Rettangolo(2, 4, 50, 150, 300.0, 10, 3));
+//		rect.add(new Rettangolo(3, 2, 140, 300, 300.0, 10, 3));
+//		rect.add(new Rettangolo(4, 3, 0, 120, 300.0, 10, 1));
 
+		rect.add(new Rettangolo(1, 0, 332, 405, 234.59938788820435, altezza_massima, altezza_minima));
+		rect.add(new Rettangolo(2, 0, 385, 453, 187.98624014209324, altezza_massima, altezza_minima));
 		
 //		rect.add(new Rettangolo(0, 1, 0, 100, 0, 100, 300, 10, 3, 30, 100));
 //		rect.add(new Rettangolo(1, 2, 100, 300, 100, 300, 300, 10, 3, 30, 100));

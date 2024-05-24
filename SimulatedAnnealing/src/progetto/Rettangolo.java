@@ -5,7 +5,7 @@ import utils.RequestImpossibleException;
 public class Rettangolo implements Comparable<Rettangolo>{
 	
 	public static int passoGenerazioneRandomica = 10;
-	public static int passoGenerazioneRandomicaTraslaz = 25;
+	public static int passoGenerazioneRandomicaTraslaz = 20;
 
 	
 	public int identificativo;
@@ -109,7 +109,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		minAltezzaPossibile = min_h;
 		
 		if(margineDestro > margineDestroMassimo || margineSinistro < margineSinistroMinimo) {
-			throw new RequestImpossibleException("sei andato oltre il tempo massimo/minimo " + id + ",  ms " + margineSinistro + ",  md " + margineDestro + 
+			throw new RequestImpossibleException("sei andato oltre il tempo massimo/minimo, id " + id + ",  ms " + margineSinistro + ",  md " + margineDestro + 
 												",  msm " + margineSinistroMinimo +  ",  mdm " + margineDestroMassimo);
 		}
 		
@@ -201,9 +201,29 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	}
 	
 	
+	//generazione randomica dove faccio partire il rect di base massima in unpunto a caso consentito 
+	public Rettangolo generaNuovoRectDiBaseMassima(Random rand) throws RequestImpossibleException {
+		//se ha a disposizione più tempo del necessario, posso spostarlo
+		if(margineDestroMassimo -  margineSinistroMinimo > baseMassima) {
+			int nuovoMargineSinistro = margineSinistro;
+			int nuovoMargineDestro = margineDestro;
+			//sposto il margine sinistro in un punto fattibile, poi aggiusto quello destro
+			nuovoMargineSinistro = margineSinistroMinimo + rand.nextInt(margineDestroMassimo - (margineSinistroMinimo + baseMassima));
+			nuovoMargineDestro = nuovoMargineSinistro + baseMassima;
+			
+			Rettangolo nuovo_rect = new Rettangolo(identificativo, fase, margineSinistroMinimo, margineDestroMassimo, nuovoMargineSinistro, nuovoMargineDestro, 
+													area, maxAltezzaPossibile, minAltezzaPossibile, baseMinima, baseMassima);	
+					
+			return nuovo_rect;
+		}
+		//altrimenti lo lascio com'è
+		return this.clone();
+
+	}
+	
+	
 	@Override
 	public int compareTo(Rettangolo r) {
-		
 		if(margineSinistro < r.margineSinistro)
 			return -1;
 		
@@ -239,11 +259,8 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		return "id " + identificativo + ",  fase " + fase + ",  area " + area + ",  altezza " + altezza + ",  start " + margineSinistro + ",  stop " + margineDestro + 
 				",  msm " + margineSinistroMinimo + ",  mdM " + margineDestroMassimo + ",  base massima " + baseMassima + ",  base" + base;
 	}
-	
-	
-//	public RettangoloSemplificato generaRectDaMettereNelJson() {
-//		return new RettangoloSemplificato(identificativo, fase, area, margineSinistro, margineDestro);
-//	}
+
+
 	
 }
 
