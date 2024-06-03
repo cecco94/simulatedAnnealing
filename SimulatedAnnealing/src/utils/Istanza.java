@@ -16,6 +16,5 @@ public class Istanza {
     
     public Istanza(ArrayList<Richiesta> rettangoli) {
     	this.richieste = rettangoli;
-
     }
 }

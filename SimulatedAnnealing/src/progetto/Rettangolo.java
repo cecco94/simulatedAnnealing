@@ -4,10 +4,6 @@ import utils.RequestImpossibleException;
 
 public class Rettangolo implements Comparable<Rettangolo>{
 	
-	public static int passoGenerazioneRandomica = 10;
-	public static int passoGenerazioneRandomicaTraslaz = 20;
-
-	
 	public int identificativo;
 	
 	public int fase;
@@ -136,7 +132,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 
 	
 	//dato il rettangolo, dovrebbe generare un altro rettangolo ammissibile attraverso piccole perturbazioni casuali dei valori idella base
-	public Rettangolo randomGeneration(Random rand) throws RequestImpossibleException {
+	public Rettangolo randomGeneration(Random rand, int passoGenerazioneRandomica) throws RequestImpossibleException {
 		
 		int nuovoMargineSinistro, nuovoMargineDestro;
 		
@@ -153,7 +149,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		}
 			
 		//sistemiamo ora il margine destro
-		nuovoMargineDestro = margineDestro + rand.nextInt(-15, 16);
+		nuovoMargineDestro = margineDestro + rand.nextInt(-passoGenerazioneRandomica, 1 + passoGenerazioneRandomica);
 		
 		//se abbiamo stretto troppo, dobbiamo allargare il rect
 		if(nuovoMargineDestro - nuovoMargineSinistro < baseMinima) {
@@ -175,7 +171,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 
 	
 	//trasla il rettangolo di base massima lungo tutto il tempo a sua disposizione
-	public Rettangolo randomGenerationForTranslationProblem(Random rand) throws RequestImpossibleException {
+	public Rettangolo randomGenerationForTranslationProblem(Random rand, int passoGenerazioneRandomicaTraslaz) throws RequestImpossibleException {
 		int nuovoMargineSinistro = margineSinistro;
 		int nuovoMargineDestro = margineDestro;
 				
@@ -194,14 +190,12 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		
 		Rettangolo nuovo_rect = new Rettangolo(identificativo, fase, margineSinistroMinimo, margineDestroMassimo, nuovoMargineSinistro, nuovoMargineDestro, 
 				area, maxAltezzaPossibile, minAltezzaPossibile, baseMinima, baseMassima);	
-		
-		//System.out.println(nuovo_rect.toString());
-		
+				
 		return nuovo_rect;
 	}
 	
 	
-	//generazione randomica dove faccio partire il rect di base massima in unpunto a caso consentito 
+	//generazione randomica dove faccio partire il rect di base massima in un punto a caso consentito 
 	public Rettangolo generaNuovoRectDiBaseMassima(Random rand) throws RequestImpossibleException {
 		//se ha a disposizione più tempo del necessario, posso spostarlo
 		if(margineDestroMassimo -  margineSinistroMinimo > baseMassima) {

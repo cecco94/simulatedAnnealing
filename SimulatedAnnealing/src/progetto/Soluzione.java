@@ -15,8 +15,6 @@ public class Soluzione {
     public ArrayList<Punto> puntiDiInizioFineRettangoli;
     public static double massimoSfasamentoConsentito = 4.2;
     public static double massimaAltezzaConsentita = 7.4;
-    //se abbiamo due soluzioni dove l'altezza massima è uguale, privilegierà quella con rettangoli più bassi e distribuiti
-    public double mediaintersezioniRettangoli = 0, mediaInnalzamentoRettangoli = 0;
     
     
     //serve per creare il json
@@ -38,8 +36,7 @@ public class Soluzione {
     		puntiDiInizioFineRettangoli.add(new Punto(r, r.margineDestro, r.altezza, false));
     	}
     	ComparatorTempoDiInizio c = new ComparatorTempoDiInizio();
-    	Collections.sort(puntiDiInizioFineRettangoli, c);
-    	    	
+    	Collections.sort(puntiDiInizioFineRettangoli, c);	    	
     }
    
    
@@ -58,21 +55,14 @@ public class Soluzione {
 		   if(p.punto_di_inizio) {
 			   h += p.altezzaRettangolo;
 			   p.sommaAltezzeNelPunto = h;
-			   
-			   //se il rettangolo in questione è stato alzato, la soluzione viene penalizzata di poco
-			   mediaInnalzamentoRettangoli += (p.r.baseMassima - p.r.base);
-		   }
-		   
+		   }		   
 		   else {
 			   h -= p.altezzaRettangolo;
 			   p.sommaAltezzeNelPunto = h;
 		   }
-		   
 		   if(h > maxH)
 			   maxH = h;
 	   }
-	  
-	   mediaInnalzamentoRettangoli /= rettangoli.size();
 	   return maxH;
    }
    
@@ -131,7 +121,6 @@ public class Soluzione {
 		   if(sfasamento_complessivo > sfasamento_massimo) {
 			   sfasamento_massimo = sfasamento_complessivo;
 		   }
-		   
 	   }
 	   
 	   if(sfasamento_massimo < massimoSfasamentoConsentito) {
@@ -158,10 +147,22 @@ public class Soluzione {
 				  if(p2.punto_di_inizio) 
 					  intersezioni++;
 			  }
-		   }
-		   
+		   }		   
 	   }
 	   return intersezioni;
+   }
+
+   
+   public double mediaInnalzamentoRettangoli() {
+	   double mediaInnalzamentoRettangoli = 0;
+	   for(int i = 0; i < rettangoli.size(); i++) {
+		   
+		   Rettangolo r = rettangoli.get(i);
+		   mediaInnalzamentoRettangoli += (r.baseMassima - r.base);
+	   }
+	   
+	   mediaInnalzamentoRettangoli /= rettangoli.size();
+	   return mediaInnalzamentoRettangoli;
    }
    
    
@@ -192,28 +193,27 @@ public class Soluzione {
    
    
    //serve per l'algoritmo, crea una nuova soluzione sposyando a caso gli estremi dei rettangoli
-   public Soluzione generaNuovaSoluzioneCasuale() throws RequestImpossibleException {
+   public Soluzione generaNuovaSoluzioneCasuale(int passoGenerazione) throws RequestImpossibleException {
 		Random rand = new Random();
 		ArrayList<Rettangolo> new_list = new ArrayList<>();
 		
 	   for(int i = 0; i < rettangoli.size(); i++) {
-		   Rettangolo new_rect = rettangoli.get(i).randomGeneration(rand);
+		   Rettangolo new_rect = rettangoli.get(i).randomGeneration(rand, passoGenerazione);
 		   new_list.add(new_rect);
 	   }
 	   
-	   Collections.sort(new_list);
 	   Soluzione new_solution = new Soluzione(new_list);
 	   return new_solution;
    }
    
    
    //serve per il preprocessing: crea una nuova soluzione traslando a caso alcuni rettangoli
-   public Soluzione generaNuovaSoluzioneCasualeTraslazione() throws RequestImpossibleException {
+   public Soluzione generaNuovaSoluzioneCasualeTraslazione(int passoTraslazione) throws RequestImpossibleException {
 		Random rand = new Random();
 		ArrayList<Rettangolo> new_list = new ArrayList<>();
 		
 	   for(int i = 0; i < rettangoli.size(); i++) {
-		   Rettangolo new_rect = rettangoli.get(i).randomGenerationForTranslationProblem(rand);
+		   Rettangolo new_rect = rettangoli.get(i).randomGenerationForTranslationProblem(rand, passoTraslazione);
 		   new_list.add(new_rect);
 	   }
 	   

@@ -109,11 +109,15 @@ public class GeneratoreIstanze {
 //		rect.add(new Rettangolo(3, 2, 140, 300, 300.0, 10, 3));
 //		rect.add(new Rettangolo(4, 3, 0, 120, 300.0, 10, 1));
 
-		rect.add(new Rettangolo(1, 0, 332, 405, 234.59938788820435, altezza_massima, altezza_minima));
-		rect.add(new Rettangolo(2, 0, 385, 453, 187.98624014209324, altezza_massima, altezza_minima));
+		rect.add(new Rettangolo(0, 1, 205, 246, 122.57449463908152, altezza_massima, altezza_minima));
+		rect.add(new Rettangolo(2, 3, 213, 244, 109.95380364705792, altezza_massima, altezza_minima));
+		rect.add(new Rettangolo(3, 3, 241, 270, 93.26641808851427, altezza_massima, altezza_minima));
+		
+		rect.add(new Rettangolo(4, 1, 319, 390, 204.2159663011782, altezza_massima, altezza_minima));
+		rect.add(new Rettangolo(5, 3, 351, 366, 38.768136014971255, altezza_massima, altezza_minima));
 		
 //		rect.add(new Rettangolo(0, 1, 0, 100, 0, 100, 300, 10, 3, 30, 100));
-//		rect.add(new Rettangolo(1, 2, 100, 300, 100, 300, 300, 10, 3, 30, 100));
+//		rect.add(new Rettangolo(1, 2, 110, 300, 100, 300, 300, 10, 3, 30, 100));
 
 //		rect.add(new Rettangolo(0, 0, 0, 0, 0, 0, 0));
 //		rect.add(new Rettangolo(0, 0, 0, 0, 0, 0, 0));

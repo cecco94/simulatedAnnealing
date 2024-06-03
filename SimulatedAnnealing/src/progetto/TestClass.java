@@ -10,7 +10,6 @@ import utils.GeneratoreIstanze;
 import utils.JSON;
 import utils.PlanImpossibleException;
 import utils.RequestImpossibleException;
-import utils.visualization.Grafico;
 import utils.visualization.PannelloAltezzaSoluzione;
 import utils.visualization.PannelloSfasamentoSoluzione;
 
@@ -25,10 +24,6 @@ public class TestClass {
 	public static boolean newProblem = false, saveSolution = false, istanzaSpecifica = false, 
 							grafico = false, datasetCreation = false, preprocessing = true;
 	
-	//per decidere quali dati creare o lggere
-//	public static boolean tempo_su_temperatura = true, costo_su_temperatura = false, tempo_su_raffreddamento = false, 
-//						  costo_su_raffreddamento = false, costo_su_passo = false;
-	
 	//per decidere la configurazione del problema
 	public static int macchine_tranquille = 5, macchine_urgenti = 4;
 	
@@ -36,8 +31,8 @@ public class TestClass {
 	public static int istanza = 1;
 	
 	
-	public static void main(String[] args) throws RequestImpossibleException, JsonMappingException, JsonProcessingException, PlanImpossibleException {
-				
+	public static void main(String[] args) throws RequestImpossibleException, JsonMappingException, JsonProcessingException, PlanImpossibleException {		
+		
 		if(newProblem) {			
 			GeneratoreIstanze.generaIstanzaProblema(macchine_tranquille, macchine_urgenti);  
 			return;
@@ -53,16 +48,6 @@ public class TestClass {
 			Soluzione sol = AlgoritmoSimulatedAnnealing.simulatedAnnealing(ist);
 			visualizzaDatiFinali(sol, sol.costoSoluzione());
 			
-			return;
-		}
-			
-		if(grafico) {
-			disegnaGrafico();
-			return;
-		}
-		
-		if(datasetCreation) {
-			creaNuoviDati();
 			return;
 		}
 		
@@ -100,68 +85,6 @@ public class TestClass {
 
 	
 	////////////////////////// METODI AUSILIARI ///////////////////////////
-	
-	private static void creaNuoviDati() throws JsonMappingException, JsonProcessingException, RequestImpossibleException {
-		Soluzione soluzioneIniziale = JSON.caricaIstanzaProblema("data/istanze/" + istanza + "_problema_con_"+macchine_tranquille+
-				 													"_macchine_tranquille_"+macchine_urgenti+"_macchine_urgenti.json");
-		
-		double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();
-        visualizzaDatiIniziali(soluzioneIniziale, costoSoluzioneIniziale);                           
-        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-        
-        
-        long inizio = System.currentTimeMillis();
-        Soluzione soluz1 = AlgoritmoSimulatedAnnealing.simulatedAnnealing(soluzioneIniziale);
-        System.out.println("tempo impiegato nuovo " + (System.currentTimeMillis() - inizio));
-        
-        //soluz1.printSoluzione();
-        visualizzaAltezzaSoluzione(soluz1, "nuovo");
-        visualizzaSfasamentoSoluzione(soluz1, "nuovo");
-        System.out.println("costo nuovo " + soluz1.costoSoluzione());
-        System.out.println("////////////////////////");
-        
-        inizio = System.currentTimeMillis();
-        //Soluzione soluz2 = AlgoritmoSimulatedAnnealing.simulatedAnnealing2(soluzioneIniziale, costoSoluzioneIniziale);
-        System.out.println("tempo impiegato vecchio " + (System.currentTimeMillis() - inizio));
-        
-        //soluz2.printSoluzione();
-//        System.out.println("costo vecchio " + soluz2.costoSoluzione());
-//        visualizzaAltezzaSoluzione(soluz2, "vecchio");
-//        visualizzaSfasamentoSoluzione(soluz2, "vecchio");
-        
-	}
-
-
-	private static void disegnaGrafico() throws JsonMappingException, JsonProcessingException {
-//		if (tempo_su_temperatura) {
-//			Grafico g = new Grafico("grafico", "tempo su temperatura", "temperatura (in migliaia)", "tempo (in millisecondi)", 
-//									"data/grafici/_tempo_su_temperatura_" + macchine_tranquille + "_"+ macchine_urgenti +".json");
-//			g.printPlot();
-//		}
-//		
-//		else if(costo_su_temperatura) {
-//			Grafico g = new Grafico("grafico", "costo su temperatura", "temperatura (in migliaia)", "costo",
-//									"data/grafici/_costo_su_temperatura_" + macchine_tranquille + "_"+ macchine_urgenti + ".json");
-//			g.printPlot();
-//		}
-//		
-//		else if(tempo_su_raffreddamento) {
-//			
-//		}
-//
-//		else if(costo_su_raffreddamento) {
-//			Grafico g = new Grafico("grafico", "costo su raffreddamento", "raffreddamento", "costo", "data/grafici/2costo_su_raffreddamento.json");
-//			g.printPlot();
-//		}
-//		
-//		else if(costo_su_passo) {
-//			Grafico g = new Grafico("grafico", "costo su passo", "passo", "costo", 
-//									"data/grafici/_costo_su_passo_"+ macchine_tranquille + "_"+ macchine_urgenti + ".json");
-//			g.printPlot();
-//		}
-	}
-
-	
 	private static void controllaSoluzione(Soluzione migliore_soluzione) throws PlanImpossibleException, JsonMappingException, JsonProcessingException {
 	 if(migliore_soluzione.sfasamento() > Soluzione.massimoSfasamentoConsentito) {
         	throw new PlanImpossibleException("piano impossibile, troppo sbilanciamento di fase nel punto: " + migliore_soluzione.puntoMassimoSfasamento().toString());
@@ -183,7 +106,7 @@ public class TestClass {
         visualizzaSfasamentoSoluzione(migliore_soluzione, "SFASAMENTO DOPO TRASLAZIONE");
         migliore_soluzione.printSoluzione();
         System.out.println("intersezioni " + migliore_soluzione.contaIntersezioni());
-        System.out.println("media restringimento basi " + migliore_soluzione.mediaInnalzamentoRettangoli);
+        System.out.println("media restringimento basi " + migliore_soluzione.mediaInnalzamentoRettangoli());
         System.out.println("costo dopo traslaz " + costo_migliore_soluzione);
         System.out.println("altezza max dopo traslaz " + migliore_soluzione.altezzaMassima());
         System.out.println("sfasamento max dopo traslaz " + migliore_soluzione.sfasamento());
@@ -196,7 +119,7 @@ public class TestClass {
         visualizzaSfasamentoSoluzione(migliore_soluzione, "SFASAMENTO FINALE");
         migliore_soluzione.printSoluzione();
         System.out.println("intersezioni " + migliore_soluzione.contaIntersezioni());
-        System.out.println("media restringimento basi " + migliore_soluzione.mediaInnalzamentoRettangoli);
+        System.out.println("media restringimento basi " + migliore_soluzione.mediaInnalzamentoRettangoli());
         System.out.println("costo finale " + costo_migliore_soluzione);
         System.out.println("altezza max finale " + migliore_soluzione.altezzaMassima());
         System.out.println("sfasamento max finale " + migliore_soluzione.sfasamento());
@@ -209,7 +132,7 @@ public class TestClass {
         visualizzaSfasamentoSoluzione(soluzioneIniziale, "SFASAMENTO PRIMA");
         soluzioneIniziale.printSoluzione();
         System.out.println("intersezioni " + soluzioneIniziale.contaIntersezioni());
-        System.out.println("media restringimento basi " + soluzioneIniziale.mediaInnalzamentoRettangoli);
+        System.out.println("media restringimento basi " + soluzioneIniziale.mediaInnalzamentoRettangoli());
         System.out.println("costo iniziale " + costoSoluzioneIniziale);
         System.out.println("altezza max iniziale " + soluzioneIniziale.altezzaMassima());
         System.out.println("sfasamento max iniziale " + soluzioneIniziale.sfasamento());
@@ -244,16 +167,16 @@ public class TestClass {
 //distribuire i rect nel tempo (prima dell'algoritmo viene fatto un preprocessing dove i rect vengono distribuiti in modo uniforme nel tempo)
 //per fare ciò, prima si mettono i rect uno dopo l'altro (separati oppure no), poi si fa un mini annealing che cerca di separarli meglio
 //il prof vuole un algo che crea tot soluzioni casuali e usa la migliore come punto di partenza	(tanto vale usare il SA per traslarli, no?)
-//all'aumentare delle richieste urgenti, il preprocessing funziona sempre meno, forse mi tocca inventare qualcosa di meglio prima di usare il SA
-//forse il preprocessing va fatto solo se le macchine urgenti sono meno di 1/3 e basta
+//all'aumentare delle richieste urgenti, il preprocessing funziona sempre meno
 
 //implementato un criterio secondario per la scelta dove si privilegiano le soluzioni con rect di base più larga/meno sovrapposti
 
 //aggiustare i parametri di temperatura, raffreddamento, passo (vedi qaunte iterazioni fa senza cambiare)	(cambiata implementazione)
-//diminuire il passo al diminuire della temperatura non pare cambiare di molto la situazione
+//diminuire il passo al diminuire della temperatura non pare cambiare di molto la situazione (anzi, peggiora la soluzione)
+//potrei pensare di spostare maggiormente i rect che sono più vicini al punto critico
 
 //usa excell per i grafici
-//controllare cosa fa ogni tot (ogni volta che cambia) 
+//controllare cosa fa ogni tot (ogni volta che cambia, fatto) 
 
 
 
