@@ -1,4 +1,4 @@
-package utils.ordinamento;
+package utils.sorting;
 import java.util.Comparator;
 
 import progetto.Point;

@@ -26,6 +26,50 @@ public class JSON {
 	}
 	
 	
+	//loads the json file and transforms it into a string
+	public static String readInputFile(String path) {
+		String line = null;
+		String data = "";
+		try {
+		      File myObj = new File(path);
+		      Scanner myReader = new Scanner(myObj);
+		      while (myReader.hasNextLine()) {
+		        line = myReader.nextLine();
+		        data = data + line;
+		      }
+		      myReader.close();
+		    } 
+		catch (FileNotFoundException e) {
+		      System.out.println("An error occurred.");
+		      e.printStackTrace();
+		}
+		return data;	
+	}
+	
+	
+	//loads the json file and transforms it into a plan
+	public static Plan loadInputPlan(String path) throws JsonMappingException, JsonProcessingException {
+		String line = null;
+		String data = "";
+		try {
+		      File myObj = new File(path);
+		      Scanner myReader = new Scanner(myObj);
+		      while (myReader.hasNextLine()) {
+		        line = myReader.nextLine();
+		        data = data + line;
+		      }
+		      myReader.close();
+		    } catch (FileNotFoundException e) {
+		      System.out.println("An error occurred.");
+		      e.printStackTrace();
+		    }
+		
+		//takes the string and creates the plan request
+		Plan planRequest = stringToObj(data, Plan.class);
+		return planRequest;
+	}	
+	
+	//loads the json file and transforms it into a solution
 	public static Solution loadPlanRequest(String path) throws JsonMappingException, JsonProcessingException, RequestImpossibleException {
 		//loads the json file and transforms it into a string
 		String line = null;
@@ -65,46 +109,9 @@ public class JSON {
 		Solution sol = new Solution(rectList, maxPhaseDiff, maxPower);
 		return sol;
 	}
+
 	
-	
-	public static void saveInstanceOfTheProblem(String path, String filename, Plan instance) throws JsonMappingException, JsonProcessingException {
-		//save the file in the data folder
-		String completeName = path+filename;
-        try {
-            File myObj = new File(completeName);
-            if (myObj.createNewFile()) {
-              System.out.println("File created: " + myObj.getName());
-            }
-            //if the file already exists, create a new file with increasing number
-            else {
-            	int i = 1;
-            	while(!myObj.createNewFile()) {
-            		i++;
-            		completeName = path+ i +filename.substring(1);
-            		myObj = new File(completeName);
-            	}
-            }
-          } 
-        	catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-          }
-        
-        //creates the json string
-        String s = JSON.objToString(instance);   
-        //writes in the file 
-        try {
-            FileWriter myWriter = new FileWriter(completeName);
-            myWriter.write(s);
-            myWriter.close();
-            System.out.println("Successfully wrote to the file.");
-          } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-          }
-	}
-	
-	
+	//save the solution, if exists another solution with the same name, add a number to the name
 	public static void saveSolution(String path, String filename, Plan solution) throws JsonMappingException, JsonProcessingException {
 		String completeName = path+filename;
         try {
@@ -138,4 +145,31 @@ public class JSON {
             e.printStackTrace();
           }
 	}
+	
+	
+	public static void saveSolution(String path, Plan solution) throws JsonMappingException, JsonProcessingException {
+        try {
+            File myObj = new File(path);
+            myObj.createNewFile();
+            System.out.println("File created: " + myObj.getName());
+        }
+    	catch (IOException e) {
+    		System.out.println("An error occurred.");
+    		e.printStackTrace();
+        }
+        
+        String s = JSON.objToString(solution);      
+        try {
+            FileWriter myWriter = new FileWriter(path);
+            myWriter.write(s);
+            myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+          } 
+        catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+         }
+	}
+	
+	
 }

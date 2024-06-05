@@ -7,7 +7,7 @@ import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
 
-import progetto.TestClass;
+import main.LibraryInterface;
 import progetto.Point;
 import progetto.Rectangle;
 import progetto.Solution;
@@ -37,7 +37,7 @@ public class HeightPanel extends JPanel {
 	private void drawAxes(Graphics2D g2) {
 		g2.setColor(Color.black);
 		int thickness = 5;
-		for(int x = 0; x < TestClass.windowWidth; x += 10) {
+		for(int x = 0; x < LibraryInterface.windowWidth; x += 10) {
 			if (x == 480){
 				thickness = 20;
 			}
@@ -47,18 +47,18 @@ public class HeightPanel extends JPanel {
 			else {
 				thickness = 5;
 			}
-			g2.drawLine(x, TestClass.windowHeight - thickness, x, TestClass.windowHeight + thickness);
+			g2.drawLine(x, LibraryInterface.windowHeight - thickness, x, LibraryInterface.windowHeight + thickness);
 		}
 		
-		g2.drawLine(TestClass.windowWidth - 5, 0, TestClass.windowWidth - 5, TestClass.windowHeight);
-		for(int y = 0; y < TestClass.windowHeight; y += 10) {
+		g2.drawLine(LibraryInterface.windowWidth - 5, 0, LibraryInterface.windowWidth - 5, LibraryInterface.windowHeight);
+		for(int y = 0; y < LibraryInterface.windowHeight; y += 10) {
 			if(y % 40 == 0) {
 				thickness = 10;
 			}
 			else {
 				thickness = 5;
 			}
-			g2.drawLine(TestClass.windowWidth - thickness, y, TestClass.windowWidth + thickness, y);
+			g2.drawLine(LibraryInterface.windowWidth - thickness, y, LibraryInterface.windowWidth + thickness, y);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class HeightPanel extends JPanel {
     	 
     	 for( Rectangle r : solution.getRectanglesList()) {    		 
     		 Rectangle2D.Double rect = new Rectangle2D.Double(r.getStartMinute(), 
-    				 											TestClass.windowHeight - r.getHeight()*40, 
+    				 											LibraryInterface.windowHeight - r.getHeight()*40, 
     				 											r.getBase(), 
     				 											r.getHeight()*40);    		 
     		 if( r.getPhase() == 1 ) {
@@ -101,16 +101,16 @@ public class HeightPanel extends JPanel {
 	   		Point p2 = solution.getEndStartPontsList().get(i + 1);   
 	   		
 	   		Rectangle2D.Double rect = new Rectangle2D.Double(p.getMinute(), 
-	   														TestClass.windowHeight - p.getSumHeightInThisPoint()*40 - 2, 
+	   														LibraryInterface.windowHeight - p.getSumHeightInThisPoint()*40 - 2, 
 	   														p2.getMinute() - p.getMinute(), 
 	   														2);  
 	   		g2.fill(rect);
 	   	 }
    	 
 	   	g2.drawLine(0, 
-	   				(int)(TestClass.windowHeight - solution.maxHigh()*40), 
-	   				TestClass.windowWidth, 
-	   				(int)(TestClass.windowHeight - solution.maxHigh()*40));
+	   				(int)(LibraryInterface.windowHeight - solution.maxHigh()*40), 
+	   				LibraryInterface.windowWidth, 
+	   				(int)(LibraryInterface.windowHeight - solution.maxHigh()*40));
 	}
  
 }

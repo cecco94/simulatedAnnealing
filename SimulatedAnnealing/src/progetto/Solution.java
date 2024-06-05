@@ -3,9 +3,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import lombok.Data;
-import utils.ordinamento.PhaseDifferenceComparator;
-import utils.ordinamento.SumHighComparator;
-import utils.ordinamento.ComparatorStartTime;
+import utils.sorting.ComparatorStartTime;
+import utils.sorting.PhaseDifferenceComparator;
+import utils.sorting.SumHighComparator;
 
 @Data
 public class Solution {
@@ -257,6 +257,28 @@ public class Solution {
 			richieste.add(r.fromRectToRequest());
 		}
 		return new Plan(richieste, maxDifferenceBetweenPhases, maxAvaiblePower);
+	}
+
+
+	public static Solution convertPlanToSolution(Plan planRequest) throws RequestImpossibleException {		
+		ArrayList<Rectangle> rectList = new ArrayList<>();
+		double maxPhaseDiff = planRequest.getMaxdifferenceBetweenPhases();
+		double maxPower = planRequest.getMaxNetPower();
+		
+		//for each request in the instance, creates a rectangle with feasible dimensions
+		for(Request request : planRequest.getRequestList()) {
+			Rectangle rect = new Rectangle(request.vehicleId, 
+											 request.fase, 
+											 request.startMinute, 
+											 request.endMinute, 
+											 request.energy, 
+											 request.maxVehiclePower, 
+											 request.minVehiclePower);
+			rectList.add(rect);
+		}
+		
+		Solution sol = new Solution(rectList, maxPhaseDiff, maxPower);
+		return sol;
 	}
 
    

@@ -1,56 +1,66 @@
-package progetto;
+package main;
+
 import java.awt.Dimension;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import utils.visualization.HeightPanel;
+import progetto.JSON;
+import progetto.Plan;
+import progetto.PlanImpossibleException;
+import progetto.RequestImpossibleException;
+import progetto.SimulatedAnnealingAlgorithm;
+import progetto.Solution;
 import utils.visualization.DifferencePhasePanel;
+import utils.visualization.HeightPanel;
 
-
-
-public class TestClass {
-
+//la classe che prende un file json con il problema e restituisce un file json con la soluzione
+//per usare la libreria senza dover richiamare il metodo main
+public class LibraryInterface {
+	
 	public static int windowHeight = 600;
 	public static int windowWidth = 600;
-		
 	
-	public static void main(String[] args) throws RequestImpossibleException, JsonMappingException, JsonProcessingException, PlanImpossibleException {		
 		
-		String dataPath = args[0];
-	    String solutionPath = args[1];
+	public static String solveProblem(String problem, boolean showData) throws RequestImpossibleException, PlanImpossibleException, JsonMappingException, JsonProcessingException {		
 		
-		Solution initialSolution = JSON.loadPlanRequest(dataPath);
-		double initialSolutionCost = initialSolution.cost();
-        visualizeInitialData(initialSolution, initialSolutionCost); 
-        
+		Plan initialPlan = JSON.stringToObj(problem, Plan.class);
+		Solution initialSolution = Solution.convertPlanToSolution(initialPlan);
+		
+		if( showData ) {
+			double initialSolutionCost = initialSolution.cost();
+	        visualizeInitialData(initialSolution, initialSolutionCost); 
+		} 
+	
     	Solution bestSolution = SimulatedAnnealingAlgorithm.preprocessing(initialSolution.clone());
-        double bestSolutionCost = bestSolution.cost();    
-        visualizePreprocessData(bestSolution, bestSolutionCost);
-        
+    	if( showData ) {
+            double bestSolutionCost = bestSolution.cost();    
+            visualizePreprocessData(bestSolution, bestSolutionCost);
+    	}  
+    	
         bestSolution = SimulatedAnnealingAlgorithm.simulatedAnnealing(bestSolution);
-        bestSolutionCost = bestSolution.cost();
-        
-        visualizeFinalData(bestSolution, bestSolutionCost);
-        checkSolution(bestSolution, solutionPath);
-        		
-	}
-
-	
-	private static void checkSolution(Solution bestSolution, String solutionPath) throws PlanImpossibleException, JsonMappingException, JsonProcessingException {
-		if(bestSolution.differenceOfPhases() >  bestSolution.maxDifferenceBetweenPhases) {
-        	throw new PlanImpossibleException("impossible plan, too much difference between phases in the point: " + bestSolution.maxPhaseDifferencePoint().toString());
+        if( showData ) {
+            double bestSolutionCost = bestSolution.cost();
+            visualizeFinalData(bestSolution, bestSolutionCost);
         }
-        
-        if( bestSolution.cost() >bestSolution.maxAvaiblePower ) {
+
+        Plan solution = checkSolution(bestSolution);		
+		return JSON.objToString(solution);
+	}
+	
+	
+	private static Plan checkSolution(Solution bestSolution) throws PlanImpossibleException {		
+		if( bestSolution.differenceOfPhases() >  bestSolution.getMaxDifferenceBetweenPhases() ) {
+        	throw new PlanImpossibleException("impossible plan, too much difference between phases in the point: " + bestSolution.maxPhaseDifferencePoint().toString());
+        }     
+        if( bestSolution.cost() > bestSolution.getMaxAvaiblePower() ) {
         	throw new PlanImpossibleException("impossible plan, too much power needed in the point: " + bestSolution.maxPowerRequestPoint().toString());
         }     
        Plan sol = bestSolution.createPlan();
-       JSON.saveSolution(solutionPath, "soluzione.json", sol);	
+       return sol;
 	}
-	
 	
 	
 	
@@ -116,8 +126,5 @@ public class TestClass {
         frame.setVisible(true);
 	}
 	
+
 }
-
-
-
-
