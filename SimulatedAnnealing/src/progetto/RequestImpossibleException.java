@@ -1,4 +1,4 @@
-package utils;
+package progetto;
 
 
 
@@ -10,7 +10,6 @@ public class RequestImpossibleException extends Exception{
 		super();
 	}
 
-	//quando viene creato per sbaglio un rettangolo impossibile, viene lanciata
 	public RequestImpossibleException(String message) {
 		super(message);
 	}
