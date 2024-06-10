@@ -133,22 +133,15 @@ public class Solution {
    
    public int countIntersections() {
 	   int intersections = 0;
-	   //takes all the starting points
-	   for( int i = 0; i < endStartPontsList.size(); i++ ) {
-		   Point p = endStartPontsList.get(i);
-		   if( p.startPoint ) {
-			  int endMin = p.r.endMinute;
-			  
-			  //takes all the following strating point in the length of the rectangle
-			  for( int j = i+1; j < endStartPontsList.size(); j++ ) {
-				  Point p2 = endStartPontsList.get(j);
-				  if( p2.getMinute() > endMin ) 
-					  break;
-				  //each time it founds a starting point, increases the intersection count
-				  if( p2.startPoint ) 
-					  intersections++;
-			  }
-		   }		   
+	   for( Rectangle r : rectanglesList ) {
+		   for( Point p : endStartPontsList ) {
+			   if( p.startPoint && (p.minute > r.startMinute) && (p.minute < r.endMinute) ) {
+				   intersections++;
+			   }
+			   if( p.minute > r.endMinute ) {
+				   break;
+			   }
+		   }
 	   }
 	   return intersections;
    }
@@ -268,7 +261,7 @@ public class Solution {
 		//for each request in the instance, creates a rectangle with feasible dimensions
 		for(Request request : planRequest.getRequestList()) {
 			Rectangle rect = new Rectangle(request.vehicleId, 
-											 request.fase, 
+											 request.phase, 
 											 request.startMinute, 
 											 request.endMinute, 
 											 request.energy, 

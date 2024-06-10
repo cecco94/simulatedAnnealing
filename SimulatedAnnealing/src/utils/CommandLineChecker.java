@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import lombok.Data;
 
@@ -23,17 +24,17 @@ public class CommandLineChecker {
 	
 	
 	public boolean checkInput() {		
-		//la lunghezza può essere 2 o 4 
+		//the possible length is 2 or 4 
 		if( !(commandLineParser.getNumParameters() == 2 || commandLineParser.getNumParameters() == 4)) {
 			return false;
 		}
 		
-		//se la lunghezza è 2, controllo che il campo di -i non sia vuoto
+		//if there are 2 parameters, checks the -i param
 		if ( commandLineParser.getNumParameters() == 2 ) {	
 			if ( commandLineParser.getSwitchValue("-i") == "" ) {
 				return false;
 			}
-			//controllo che il path esista
+			//check the path
 			Path inputPath = Paths.get( commandLineParser.getSwitchValue("-i") );	
 			if( !Files.exists(inputPath) ) {
 				return false;
@@ -41,10 +42,12 @@ public class CommandLineChecker {
 			
 			this.inputPath = commandLineParser.getSwitchValue("-i");
 			LocalDateTime date = LocalDateTime.now();
-			this.outputPath = date.toString();
+			DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+			String formattedDate = date.format(myFormatObj); 
+			this.outputPath = formattedDate + ".json";
 		}
 		
-		//se invece è 4, controllo sia il campo di -i, sia quello di -o
+		//if there are 4 params, chack the -i param and the -o param
 		else if ( commandLineParser.getNumParameters() == 4 ) {	
 			if ( commandLineParser.getSwitchValue("-i") == "" || commandLineParser.getSwitchValue("-o") == "" ) {
 				return false;

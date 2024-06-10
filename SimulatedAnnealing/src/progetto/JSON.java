@@ -97,7 +97,7 @@ public class JSON {
 		//for each request in the instance, creates a rectangle with feasible dimensions
 		for(Request request : planRequest.getRequestList()) {
 			Rectangle rect = new Rectangle(request.vehicleId, 
-											 request.fase, 
+											 request.phase, 
 											 request.startMinute, 
 											 request.endMinute, 
 											 request.energy, 
@@ -154,7 +154,8 @@ public class JSON {
             System.out.println("File created: " + myObj.getName());
         }
     	catch (IOException e) {
-    		System.out.println("An error occurred.");
+    		System.out.println("An error occurred during file creation.");
+    		System.out.println("path: " + path);
     		e.printStackTrace();
         }
         
@@ -166,7 +167,7 @@ public class JSON {
             System.out.println("Successfully wrote to the file.");
           } 
         catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.out.println("An error occurred during file writing.");
             e.printStackTrace();
          }
 	}

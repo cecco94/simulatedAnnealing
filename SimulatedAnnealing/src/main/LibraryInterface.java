@@ -66,7 +66,7 @@ public class LibraryInterface {
 	
 	////////////////////////// SECUNDARY METHODS ///////////////////////////
 	private static void visualizeInitialData(Solution initialSolution, double initialSolutionCost) {
-		visualizeHight(initialSolution, "HIGTH BEFORE");
+		visualizeHight(initialSolution, "POWER REQUEST BEFORE");
         visualizePhaseDifference(initialSolution, "PHASE DIFFERENCE BEFORE");
         initialSolution.printSolution();
         System.out.println("intersections " + initialSolution.countIntersections());
@@ -80,7 +80,7 @@ public class LibraryInterface {
 	
 	
 	private static void visualizePreprocessData(Solution bestSolution, double bestSolutionCost) {
-		visualizeHight(bestSolution, "HIGHT AFTER TRANSLATION");
+		visualizeHight(bestSolution, "POWER REQUEST AFTER TRANSLATION");
         visualizePhaseDifference(bestSolution, "PHASE DIFFERENCE AFTER TRANSATION");
         bestSolution.printSolution();
         System.out.println("intersections " + bestSolution.countIntersections());
@@ -93,7 +93,7 @@ public class LibraryInterface {
 	
 	
 	private static void visualizeFinalData(Solution bestSolution, double bestSolutionCost) {
-		visualizeHight(bestSolution, "ALTEZZE FINALI");
+		visualizeHight(bestSolution, "FINAL POWER REQUEST");
         visualizePhaseDifference(bestSolution, "SFASAMENTO FINALE");
         bestSolution.printSolution();
         System.out.println("intersections " + bestSolution.countIntersections());

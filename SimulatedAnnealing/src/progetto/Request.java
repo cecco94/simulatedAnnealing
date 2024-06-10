@@ -6,7 +6,7 @@ import lombok.Data;
 public class Request {
 
 	int vehicleId;
-	int fase;
+	int phase;
 	double energy, maxVehiclePower, minVehiclePower;
 	
 	//the minutes we want to find
@@ -19,7 +19,7 @@ public class Request {
 	
 	public Request(int id, int f, double e, int start, int stop, double kwMax, double kwMin) {
 		vehicleId = id;
-		fase = f;
+		phase = f;
 		energy = e;
 		startMinute = start;
 		endMinute = stop;

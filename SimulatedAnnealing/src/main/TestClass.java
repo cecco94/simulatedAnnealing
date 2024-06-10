@@ -14,7 +14,10 @@ import utils.CommandLineChecker;
 
 public class TestClass {
 
-	private static String usage = "info su come usare la libreria, da fare";
+	private static String usage = "how to use the library: \n"
+			+ "-i, input path, (optional -o, output path) \n"
+			+ "if you want to use the library without the main, use the static method LibraryInterface.solveProblem() \n"
+			+ "it takes a string representing the list of requests and retutns a string representing the plan";
 		
 	
 	public static void main(String[] args) throws RequestImpossibleException, JsonMappingException, JsonProcessingException, PlanImpossibleException {		
@@ -24,9 +27,9 @@ public class TestClass {
 	    	System.out.println(usage);
 	    	return;
 	    }
-	    
-	    String solutionFile = LibraryInterface.solveProblem( JSON.readInputFile(commandLineChecker.getInputPath()), false );    
-	    JSON.saveSolution( commandLineChecker.getOutputPath(), JSON.stringToObj(solutionFile, Plan.class) );    	    
+	    System.out.println("solving problem...\n");
+	    String solutionFile = LibraryInterface.solveProblem( JSON.readInputFile(commandLineChecker.getInputPath()), false ); 
+	    JSON.saveSolution( commandLineChecker.getOutputPath(), JSON.stringToObj(solutionFile, Plan.class) );      
 	}
 	
 }

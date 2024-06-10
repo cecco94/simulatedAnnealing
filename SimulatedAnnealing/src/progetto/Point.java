@@ -25,8 +25,8 @@ public class Point {
 	}
 	
 	public String toString() {
-		return "id rect " + r.idNumber + ",  minuto " + minute + ",  altezza " + rectHeight +
-				",  fase " + r.phase + ",  sommaAltezze " + sumHeightInThisPoint + ",  sfasamento " + phaseDifferenceInThisPoint;
+		return "id rect " + r.idNumber + ",  minute " + minute + ",  power " + rectHeight +
+				",  phase " + r.phase + ",  sum power " + sumHeightInThisPoint + ",  difference of phase " + phaseDifferenceInThisPoint;
 	}
 	
 	
