@@ -16,12 +16,14 @@ import progetto.Solution;
 import utils.visualization.DifferencePhasePanel;
 import utils.visualization.HeightPanel;
 
-//la classe che prende un file json con il problema e restituisce un file json con la soluzione
-//per usare la libreria senza dover richiamare il metodo main
+
 public class LibraryInterface {
 	
 	public static int windowHeight = 600;
 	public static int windowWidth = 600;
+	public static int yWindowPosition = 0;
+	public static int xWindowPosition = 0;
+
 	
 		
 	public static String solveProblem(String problem, boolean showData) throws RequestImpossibleException, PlanImpossibleException, JsonMappingException, JsonProcessingException {		
@@ -36,13 +38,17 @@ public class LibraryInterface {
 	
     	Solution bestSolution = SimulatedAnnealingAlgorithm.preprocessing(initialSolution.clone());
     	if( showData ) {
-            double bestSolutionCost = bestSolution.cost();    
+            double bestSolutionCost = bestSolution.cost();  
+            yWindowPosition += 30;
+            xWindowPosition += 30;
             visualizePreprocessData(bestSolution, bestSolutionCost);
     	}  
     	
         bestSolution = SimulatedAnnealingAlgorithm.simulatedAnnealing(bestSolution);
         if( showData ) {
             double bestSolutionCost = bestSolution.cost();
+            yWindowPosition += 30;
+            xWindowPosition += 30;
             visualizeFinalData(bestSolution, bestSolutionCost);
         }
 
@@ -56,7 +62,7 @@ public class LibraryInterface {
         	throw new PlanImpossibleException("impossible plan, too much difference between phases in the point: " + bestSolution.maxPhaseDifferencePoint().toString());
         }     
         if( bestSolution.cost() > bestSolution.getMaxAvaiblePower() ) {
-        	throw new PlanImpossibleException("impossible plan, too much power needed in the point: " + bestSolution.maxPowerRequestPoint().toString());
+        	throw new PlanImpossibleException("too much power needed in the point: " + bestSolution.maxPowerRequestPoint().toString());
         }     
        Plan sol = bestSolution.createPlan();
        return sol;
@@ -66,9 +72,11 @@ public class LibraryInterface {
 	
 	////////////////////////// SECUNDARY METHODS ///////////////////////////
 	private static void visualizeInitialData(Solution initialSolution, double initialSolutionCost) {
-		visualizeHight(initialSolution, "POWER REQUEST BEFORE");
-        visualizePhaseDifference(initialSolution, "PHASE DIFFERENCE BEFORE");
+		visualizeHight(initialSolution, "1: INITIAL POWER REQUEST");
+        visualizePhaseDifference(initialSolution, "1: INITIAL PHASE DIFFERENCE");
+        System.out.println("INITIAL SOLUTION");
         initialSolution.printSolution();
+        System.out.println();
         System.out.println("intersections " + initialSolution.countIntersections());
         System.out.println("average squeezefication " + initialSolution.averageRectSqueezefication());
         System.out.println("initial cost " + initialSolutionCost);
@@ -80,9 +88,11 @@ public class LibraryInterface {
 	
 	
 	private static void visualizePreprocessData(Solution bestSolution, double bestSolutionCost) {
-		visualizeHight(bestSolution, "POWER REQUEST AFTER TRANSLATION");
-        visualizePhaseDifference(bestSolution, "PHASE DIFFERENCE AFTER TRANSATION");
+		visualizeHight(bestSolution, "2: POWER REQUEST AFTER TRANSLATION");
+        visualizePhaseDifference(bestSolution, "2: PHASE DIFFERENCE AFTER TRANSATION");
+        System.out.println("BEFORE PREPROCESSING");
         bestSolution.printSolution();
+        System.out.println();
         System.out.println("intersections " + bestSolution.countIntersections());
         System.out.println("average squeezefication " + bestSolution.averageRectSqueezefication());
         System.out.println("cost after translation " + bestSolutionCost);
@@ -93,20 +103,24 @@ public class LibraryInterface {
 	
 	
 	private static void visualizeFinalData(Solution bestSolution, double bestSolutionCost) {
-		visualizeHight(bestSolution, "FINAL POWER REQUEST");
-        visualizePhaseDifference(bestSolution, "SFASAMENTO FINALE");
+		visualizeHight(bestSolution, "3: FINAL POWER REQUEST");
+        visualizePhaseDifference(bestSolution, "3: FINAL PHASE DIFFERENCE");
+        System.out.println("BEST SOLUTION FOUND");
         bestSolution.printSolution();
+        System.out.println();
         System.out.println("intersections " + bestSolution.countIntersections());
         System.out.println("average squeezefication " + bestSolution.averageRectSqueezefication());
         System.out.println("final cost " + bestSolutionCost);
         System.out.println("final max hight " + bestSolution.maxHigh());
         System.out.println("final max phase diff " + bestSolution.differenceOfPhases());
+        System.out.println("\n");
 		
 	}
 	
 	
 	public static void visualizeHight(Solution solution, String title) {
 		JFrame frame = new JFrame(title);
+		frame.setLocation(xWindowPosition, yWindowPosition);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         HeightPanel solPan = new HeightPanel(solution);
         solPan.setPreferredSize(new Dimension(windowWidth, windowHeight));
@@ -118,6 +132,7 @@ public class LibraryInterface {
 	
 	public static void visualizePhaseDifference(Solution solution, String title) {
 		JFrame frame = new JFrame(title);
+		frame.setLocation(xWindowPosition + windowWidth + 30, yWindowPosition);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         DifferencePhasePanel solPan = new DifferencePhasePanel(solution);
         solPan.setPreferredSize(new Dimension(windowWidth, windowHeight));

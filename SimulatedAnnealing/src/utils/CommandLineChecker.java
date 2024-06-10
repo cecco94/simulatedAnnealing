@@ -15,6 +15,7 @@ public class CommandLineChecker {
 	String[] args;
 	String inputPath;
 	String outputPath;
+	boolean printSol = false;
 	CommandLineParser commandLineParser;
 	
 	public CommandLineChecker(String[] args) {
@@ -23,43 +24,29 @@ public class CommandLineChecker {
 	}
 	
 	
-	public boolean checkInput() {		
-		//the possible length is 2 or 4 
-		if( !(commandLineParser.getNumParameters() == 2 || commandLineParser.getNumParameters() == 4)) {
+	public boolean checkInput() {	
+		
+		inputPath = commandLineParser.getSwitchValue("-i");		
+		if( inputPath == "" ) {
+			System.out.println("-i not found");
 			return false;
 		}
 		
-		//if there are 2 parameters, checks the -i param
-		if ( commandLineParser.getNumParameters() == 2 ) {	
-			if ( commandLineParser.getSwitchValue("-i") == "" ) {
-				return false;
-			}
-			//check the path
-			Path inputPath = Paths.get( commandLineParser.getSwitchValue("-i") );	
-			if( !Files.exists(inputPath) ) {
-				return false;
-			}
-			
-			this.inputPath = commandLineParser.getSwitchValue("-i");
+		Path inputPath = Paths.get( commandLineParser.getSwitchValue("-i") );	
+		if( !Files.exists(inputPath) ) {
+			System.out.println("imput file not found");
+			return false;
+		}
+		
+		outputPath = commandLineParser.getSwitchValue("-o");
+		if( outputPath == "" ) {
 			LocalDateTime date = LocalDateTime.now();
 			DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
 			String formattedDate = date.format(myFormatObj); 
-			this.outputPath = formattedDate + ".json";
+			outputPath = formattedDate + ".json";
 		}
 		
-		//if there are 4 params, chack the -i param and the -o param
-		else if ( commandLineParser.getNumParameters() == 4 ) {	
-			if ( commandLineParser.getSwitchValue("-i") == "" || commandLineParser.getSwitchValue("-o") == "" ) {
-				return false;
-			}
-			Path inputPath = Paths.get( commandLineParser.getSwitchValue("-i") );	
-			Path outpuPath = Paths.get( commandLineParser.getSwitchValue("-o") );	
-			if( !Files.exists(inputPath) || !Files.exists(outpuPath) ) {
-				return false;
-			}
-			this.inputPath = commandLineParser.getSwitchValue("-i");
-			this.outputPath = commandLineParser.getSwitchValue("-o");
-		}		
+		printSol = commandLineParser.getFlag("-p");	
 		return true;
 	}	
 	

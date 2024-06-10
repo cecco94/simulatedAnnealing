@@ -78,16 +78,16 @@ public class Solution {
 		   Point p = endStartPontsList.get(i);
 		   
 		   if( p.startPoint ) {
-			   if( p.r.phase == 1 ) {
+			   if( p.rect.phase == 1 ) {
 				   h_fase_1 += p.rectHeight;
 			   }
-			   else if( p.r.phase == 2 ) {
+			   else if( p.rect.phase == 2 ) {
 				   h_fase_2 += p.rectHeight;
 			   }
-			   else if( p.r.phase == 3 ) {
+			   else if( p.rect.phase == 3 ) {
 				   h_fase_3 += p.rectHeight;
 			   }
-			   else if( p.r.phase == 0 ) {
+			   else if( p.rect.phase == 0 ) {
 				   h_fase_1 += p.rectHeight/3;
 				   h_fase_2 += p.rectHeight/3;
 				   h_fase_3 += p.rectHeight/3;
@@ -95,16 +95,16 @@ public class Solution {
 		   }
 			   
 		   else {
-			   if( p.r.phase == 1 ) {
+			   if( p.rect.phase == 1 ) {
 				   h_fase_1 -= p.rectHeight;
 			   }
-			   else if( p.r.phase == 2 ) {
+			   else if( p.rect.phase == 2 ) {
 				   h_fase_2 -= p.rectHeight;
 			   }
-			   else if( p.r.phase == 3 ) {
+			   else if( p.rect.phase == 3 ) {
 				   h_fase_3 -= p.rectHeight;
 			   }
-			   else if( p.r.phase == 0 ) {
+			   else if( p.rect.phase == 0 ) {
 				   h_fase_1 -= p.rectHeight/3;
 				   h_fase_2 -= p.rectHeight/3;
 				   h_fase_3 -= p.rectHeight/3;
@@ -135,7 +135,7 @@ public class Solution {
 	   int intersections = 0;
 	   for( Rectangle r : rectanglesList ) {
 		   for( Point p : endStartPontsList ) {
-			   if( p.startPoint && (p.minute > r.startMinute) && (p.minute < r.endMinute) ) {
+			   if( p.startPoint && (p.minute >= r.startMinute && p.rect != r) && (p.minute < r.endMinute) ) {
 				   intersections++;
 			   }
 			   if( p.minute > r.endMinute ) {

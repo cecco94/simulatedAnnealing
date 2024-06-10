@@ -9,7 +9,7 @@ public class PlanImpossibleException extends Exception{
 	}
 
 	public PlanImpossibleException(String message) {
-		super(message);
+		super("no feasible plan found: \n" + message);
 	}
 
 }

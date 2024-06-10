@@ -14,9 +14,9 @@ import utils.CommandLineChecker;
 
 public class TestClass {
 
-	private static String usage = "how to use the library: \n"
-			+ "-i, input path, (optional -o, output path) \n"
-			+ "if you want to use the library without the main, use the static method LibraryInterface.solveProblem() \n"
+	private static String usage = "\n -----how to use the library---- \n"
+			+ "1) '-i' + ' input path' + (optional)( '-o' + ' output path' ) + (optional)( '-p' )\n"
+			+ "2) if you want to use the library without the main, use the static method LibraryInterface.solveProblem(): \n"
 			+ "it takes a string representing the list of requests and retutns a string representing the plan";
 		
 	
@@ -27,9 +27,22 @@ public class TestClass {
 	    	System.out.println(usage);
 	    	return;
 	    }
+	    
 	    System.out.println("solving problem...\n");
-	    String solutionFile = LibraryInterface.solveProblem( JSON.readInputFile(commandLineChecker.getInputPath()), false ); 
-	    JSON.saveSolution( commandLineChecker.getOutputPath(), JSON.stringToObj(solutionFile, Plan.class) );      
+	    
+	    try {
+	    	String solutionFile = LibraryInterface.solveProblem( JSON.readInputFile(commandLineChecker.getInputPath()), commandLineChecker.isPrintSol() ); 
+	    	JSON.saveSolution( commandLineChecker.getOutputPath(), JSON.stringToObj(solutionFile, Plan.class) );      
+	    }
+	    catch(PlanImpossibleException p) {
+	    	System.err.println(p.getMessage());
+	    	return;
+	    }
+	    catch(RequestImpossibleException r) {
+	    	System.err.println(r.getMessage());
+	    	return;
+	    }
+	    
 	}
 	
 }

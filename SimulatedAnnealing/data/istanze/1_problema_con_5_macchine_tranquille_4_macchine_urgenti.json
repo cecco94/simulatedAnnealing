@@ -2,11 +2,11 @@
 {"vehicleId":0,"phase":0,"energy":110.83833563614898,"maxVehiclePower":3.7,"minVehiclePower":2.3,"startMinute":377,"endMinute":419},
 {"vehicleId":1,"phase":2,"energy":57.770051573372314,"maxVehiclePower":3.7,"minVehiclePower":2.3,"startMinute":440,"endMinute":462},
 {"vehicleId":2,"phase":2,"energy":243.61279704304553,"maxVehiclePower":3.7,"minVehiclePower":2.3,"startMinute":196,"endMinute":274},
-{"vehicleId":3,"phase":1,"energy":188.8439723198156,"maxVehiclePower":3.7,"minVehiclePower":2.3,"startMinute":137,"endMinute":198},
+{"vehicleId":3,"phase":1,"energy":88.8439723198156,"maxVehiclePower":3.7,"minVehiclePower":2.3,"startMinute":137,"endMinute":198},
 {"vehicleId":4,"phase":0,"energy":226.30395431346437,"maxVehiclePower":3.7,"minVehiclePower":2.3,"startMinute":0,"endMinute":480},
 {"vehicleId":5,"phase":2,"energy":55.755764342627884,"maxVehiclePower":3.7,"minVehiclePower":2.3,"startMinute":0,"endMinute":480},
 {"vehicleId":6,"phase":2,"energy":176.900496515118,"maxVehiclePower":3.7,"minVehiclePower":2.3,"startMinute":0,"endMinute":480},
 {"vehicleId":7,"phase":0,"energy":276.917398157217,"maxVehiclePower":3.7,"minVehiclePower":2.3,"startMinute":0,"endMinute":480},
-{"vehicleId":8,"phase":3,"energy":33.3576363644012,"maxVehiclePower":3.7,"minVehiclePower":2.3,"startMinute":0,"endMinute":480}],
+{"vehicleId":8,"phase":3,"energy":33.3576363644012,"maxVehiclePower":3.7,"minVehiclePower":2.3,"startMinute":0,"endMinute":480},{"vehicleId":8,"phase":3,"energy":33.3576363644012,"maxVehiclePower":3.7,"minVehiclePower":2.3,"startMinute":0,"endMinute":480}],
 "maxdifferenceBetweenPhases":4.2,
 "maxNetPower":7.4}
