@@ -28,13 +28,13 @@ public class CommandLineChecker {
 		
 		inputPath = commandLineParser.getSwitchValue("-i");		
 		if( inputPath == "" ) {
-			System.out.println("-i not found");
+			System.err.println("'-i' not found");
 			return false;
 		}
 		
 		Path inputPath = Paths.get( commandLineParser.getSwitchValue("-i") );	
 		if( !Files.exists(inputPath) ) {
-			System.out.println("imput file not found");
+			System.err.println("imput file not found");
 			return false;
 		}
 		

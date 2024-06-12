@@ -132,18 +132,25 @@ public class Solution {
    
    
    public int countIntersections() {
-	   int intersections = 0;
+	   float intersections = 0;
 	   for( Rectangle r : rectanglesList ) {
 		   for( Point p : endStartPontsList ) {
-			   if( p.startPoint && (p.minute >= r.startMinute && p.rect != r) && (p.minute < r.endMinute) ) {
+			   //if the start point of the other rectangle in inside the borders of this rectangle
+			   if( p.startPoint && (p.minute > r.startMinute) && (p.minute < r.endMinute) ) {
 				   intersections++;
 			   }
+			   //if the start point of the other rectangle is = start poin of this rectangle
+			   if ( p.startPoint && (p.minute == r.startMinute) && (p.rect != r ) ) {
+				   //0.5 because the probram counts this intersection two times
+				   intersections += 0.5;
+			   }
+		
 			   if( p.minute > r.endMinute ) {
 				   break;
 			   }
 		   }
 	   }
-	   return intersections;
+	   return (int)intersections;
    }
 
    

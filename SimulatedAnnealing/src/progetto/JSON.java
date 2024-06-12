@@ -40,7 +40,7 @@ public class JSON {
 		      myReader.close();
 		    } 
 		catch (FileNotFoundException e) {
-		      System.out.println("An error occurred.");
+		      System.err.println("An error occurred.");
 		      e.printStackTrace();
 		}
 		return data;	
@@ -60,7 +60,7 @@ public class JSON {
 		      }
 		      myReader.close();
 		    } catch (FileNotFoundException e) {
-		      System.out.println("An error occurred.");
+		      System.err.println("An error occurred.");
 		      e.printStackTrace();
 		    }
 		
@@ -83,7 +83,7 @@ public class JSON {
 		      }
 		      myReader.close();
 		    } catch (FileNotFoundException e) {
-		      System.out.println("An error occurred.");
+		      System.err.println("An error occurred.");
 		      e.printStackTrace();
 		    }
 		
@@ -129,7 +129,7 @@ public class JSON {
             }
           } 
         	catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.err.println("An error occurred during file saving.");
             e.printStackTrace();
           }
         
@@ -139,9 +139,9 @@ public class JSON {
             FileWriter myWriter = new FileWriter(completeName);
             myWriter.write(s);
             myWriter.close();
-            System.out.println("Successfully wrote to the file.");
+            System.err.println("Successfully wrote to the file.");
           } catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.err.println("An error occurred during file writing.");
             e.printStackTrace();
           }
 	}
@@ -154,7 +154,7 @@ public class JSON {
             System.out.println("File created: " + myObj.getName());
         }
     	catch (IOException e) {
-    		System.out.println("An error occurred during file creation.");
+    		System.err.println("An error occurred during file creation.");
     		System.out.println("path: " + path);
     		e.printStackTrace();
         }
@@ -167,7 +167,7 @@ public class JSON {
             System.out.println("Successfully wrote to the file.");
           } 
         catch (IOException e) {
-            System.out.println("An error occurred during file writing.");
+            System.err.println("An error occurred during file writing.");
             e.printStackTrace();
          }
 	}

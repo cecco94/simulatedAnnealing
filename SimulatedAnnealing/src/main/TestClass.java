@@ -14,7 +14,7 @@ import utils.CommandLineChecker;
 
 public class TestClass {
 
-	private static String usage = "\n -----how to use the library---- \n"
+	private static String usage = "\n ----how to use the library---- \n"
 			+ "1) '-i' + ' input path' + (optional)( '-o' + ' output path' ) + (optional)( '-p' )\n"
 			+ "2) if you want to use the library without the main, use the static method LibraryInterface.solveProblem(): \n"
 			+ "it takes a string representing the list of requests and retutns a string representing the plan";
