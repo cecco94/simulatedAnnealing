@@ -17,6 +17,7 @@ public class HeightPanel extends JPanel {
 
 	static final long serialVersionUID = 1L;
 	Solution solution;
+	int xAxisHeight = 3*LibraryInterface.windowHeight/4;
 	
 	
 	public HeightPanel(Solution sol) {
@@ -39,19 +40,22 @@ public class HeightPanel extends JPanel {
 		int thickness = 5;
 		for(int x = 0; x < LibraryInterface.windowWidth; x += 10) {
 			if (x == 480){
-				thickness = 20;
+				thickness = 30;
 			}
 			else if(x % 60 == 0) {
-				thickness = 10;
+				thickness = 15;
 			}
 			else {
-				thickness = 5;
+				thickness = 7;
 			}
 			g2.drawLine(x, LibraryInterface.windowHeight - thickness, x, LibraryInterface.windowHeight + thickness);
 		}
 		
-		g2.drawLine(LibraryInterface.windowWidth - 5, 0, LibraryInterface.windowWidth - 5, LibraryInterface.windowHeight);
-		for(int y = 0; y < LibraryInterface.windowHeight; y += 10) {
+		g2.drawLine(0, xAxisHeight, LibraryInterface.windowWidth, xAxisHeight);
+		
+		g2.drawLine(LibraryInterface.windowWidth - 5, 0, LibraryInterface.windowWidth - 5, xAxisHeight);
+		
+		for(int y = 0; y < xAxisHeight; y += 10) {
 			if(y % 40 == 0) {
 				thickness = 10;
 			}
@@ -66,9 +70,11 @@ public class HeightPanel extends JPanel {
 	private void drawRectangles(Graphics2D g2) {
     	 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
     	 
-    	 for( Rectangle r : solution.getRectanglesList()) {    		 
+    	 for( int i = 0; i < solution.getRectanglesList().size(); i++) { 
+    		 Rectangle r = solution.getRectanglesList().get(i);
+    		 
     		 Rectangle2D.Double rect = new Rectangle2D.Double(r.getStartMinute(), 
-    				 											LibraryInterface.windowHeight - r.getHeight()*40, 
+    				 											xAxisHeight - r.getHeight()*40, 
     				 											r.getBase(), 
     				 											r.getHeight()*40);    		 
     		 if( r.getPhase() == 1 ) {
@@ -85,6 +91,15 @@ public class HeightPanel extends JPanel {
     		 }
     		 
     		 g2.fill(rect);
+       		 g2.setColor(Color.black);
+    		 g2.draw(rect);
+    		 
+    		 String id = String.valueOf(r.getIdNumber());
+    		 g2.drawString(id, r.getStartMinute() + r.getBase()/2, (int)(xAxisHeight - r.getHeight()*40 - 5));
+    		 
+    		 //disegna tempo a disposizione rect
+    		 g2.drawLine(r.getMinStartMinute(), 20 + xAxisHeight + i*20, r.getMaxStopMinute(), 20 + xAxisHeight + i*20);
+    		 g2.drawString(id, r.getMaxStopMinute(), 20 + xAxisHeight + i*20);
     	 }
     	 
      }
@@ -101,16 +116,16 @@ public class HeightPanel extends JPanel {
 	   		Point p2 = solution.getEndStartPontsList().get(i + 1);   
 	   		
 	   		Rectangle2D.Double rect = new Rectangle2D.Double(p.getMinute(), 
-	   														LibraryInterface.windowHeight - p.getSumHeightInThisPoint()*40 - 2, 
+	   														xAxisHeight - p.getSumHeightInThisPoint()*40 - 2, 
 	   														p2.getMinute() - p.getMinute(), 
 	   														2);  
 	   		g2.fill(rect);
 	   	 }
    	 
 	   	g2.drawLine(0, 
-	   				(int)(LibraryInterface.windowHeight - solution.maxHigh()*40), 
+	   				(int)(xAxisHeight - solution.maxHigh()*40), 
 	   				LibraryInterface.windowWidth, 
-	   				(int)(LibraryInterface.windowHeight - solution.maxHigh()*40));
+	   				(int)(xAxisHeight - solution.maxHigh()*40));
 	}
  
 }

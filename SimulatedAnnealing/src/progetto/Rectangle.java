@@ -49,10 +49,10 @@ public class Rectangle implements Comparable<Rectangle>{
 		startMinute = minStartMinute;
 		endMinute = maxStopMinute;
 		
-		minBase = (int)( Math.ceil(area/maxHeight) );		
+		minBase = (int)( Math.ceil(area*60/maxHeight) );		
 		//the avaible charge time may be smaller than the max charging time with h = minH
 		//the max charging time with h = minH may be smaller than the avaible charge time
-		maxBase = Math.min((int)(area/minHeight), maxStopMinute - minStartMinute);		
+		maxBase = Math.min((int)(area*60/minHeight), maxStopMinute - minStartMinute);		
 		base = maxStopMinute - minStartMinute;		
 		//if the rect base is too small
 		if( base < minBase ) {
@@ -65,7 +65,7 @@ public class Rectangle implements Comparable<Rectangle>{
 			endMinute = startMinute + maxBase;
 		}
 		
-		height = area/base;
+		height = area*60/base;
 	}	
 	
 	
@@ -104,13 +104,13 @@ public class Rectangle implements Comparable<Rectangle>{
 			base = endMinute - startMinute;
 		}
 
-		height = area/base;
+		height = area*60/base;
 		//fi the rect is too low, we change the end minute 
 		if( height < minHeight ) {
 			endMinute = maxStopMinute;
 			startMinute = maxStopMinute - maxBase;
 			base = maxBase;
-			height = area/maxBase;
+			height = area*60/maxBase;
 		}
 		
 	}
@@ -216,8 +216,8 @@ public class Rectangle implements Comparable<Rectangle>{
 	
 	
 	public String toString() {
-		return "id " + idNumber + ",  fase " + phase + ",  area " + area + ",  altezza " + height + ",  start " + startMinute + ",  stop " + endMinute + 
-				",  msm " + minStartMinute + ",  mdM " + maxStopMinute + ",  base massima " + maxBase + ",  base" + base;
+		return "id " + idNumber + ",  phase " + phase + ",  area " + area + ",  height " + height + ",  start " + startMinute + ",  stop " + endMinute + 
+				",  min_start_minute " + minStartMinute + ",  max_stop_minute " + maxStopMinute + ",  max_base " + maxBase + ",  base" + base;
 	}
 	
 	
